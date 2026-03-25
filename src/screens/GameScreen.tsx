@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { useGame } from '../context/GameContext';
+import { UI_TEXT } from '../content';
 import StatPanel from '../components/StatPanel';
 import ChoiceCard from '../components/ChoiceCard';
 import NarrativeText from '../components/NarrativeText';
@@ -9,6 +10,7 @@ import { generateNarration } from '../services/narrator';
 export default function GameScreen() {
   const { state, dispatch } = useGame();
   const prevStateRef = useRef(state.characterState);
+  const t = UI_TEXT.gameScreen;
 
   const handleChoice = useCallback(
     (index: number) => {
@@ -22,7 +24,6 @@ export default function GameScreen() {
 
       dispatch({ type: 'SET_LOADING', loading: true });
 
-      // Simulate brief "thinking" delay for narrative feel
       setTimeout(() => {
         const narration = generateNarration(
           state.characterState,
@@ -52,25 +53,21 @@ export default function GameScreen() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
       <header className="px-6 py-4 border-b border-white/5">
         <TurnIndicator currentIndex={state.currentTurnIndex} />
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row">
-        {/* Main narrative area */}
         <main className="flex-1 px-6 py-8 lg:px-12 max-w-3xl mx-auto w-full">
-          {/* Scene title */}
           <div className="mb-6">
             {state.phase === 'threshold' && state.currentThreshold && (
               <span className="text-xs text-red-400/80 uppercase tracking-wider mb-1 block">
-                {state.currentThreshold.category} · 命运事件
+                {state.currentThreshold.category} · {t.thresholdLabel}
               </span>
             )}
             <h2 className="text-2xl font-light animate-fade-in">{scene.title}</h2>
           </div>
 
-          {/* Scene text or AI narration */}
           {state.phase === 'transition' ? (
             <div className="space-y-8">
               <NarrativeText text={state.aiNarration} />
@@ -81,14 +78,12 @@ export default function GameScreen() {
                            animate-fade-in"
                 style={{ animationDelay: '0.8s', opacity: 0 }}
               >
-                继续 →
+                {t.continueButton}
               </button>
             </div>
           ) : (
             <div className="space-y-8">
               <NarrativeText text={scene.text} />
-
-              {/* Choices */}
               <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.3s', opacity: 0 }}>
                 {scene.choices.map((choice, i) => (
                   <ChoiceCard
@@ -103,24 +98,20 @@ export default function GameScreen() {
             </div>
           )}
 
-          {/* Loading indicator */}
           {state.isLoading && (
             <div className="mt-6 text-text-secondary text-sm animate-pulse-soft">
-              命运正在编织...
+              {t.loadingText}
             </div>
           )}
         </main>
 
-        {/* Side panel - stats */}
         <aside className="lg:w-72 px-6 py-8 lg:border-l border-white/5">
           <StatPanel
             state={state.characterState}
             prevState={prevStateRef.current}
           />
-
-          {/* History summary */}
           <div className="mt-6 text-xs text-text-secondary">
-            <p>已做出 {state.history.length} 个选择</p>
+            <p>{t.choiceCounter(state.history.length)}</p>
           </div>
         </aside>
       </div>

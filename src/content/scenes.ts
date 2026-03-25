@@ -1,7 +1,15 @@
+// ============================================================
+// 场景脚本 — 14 个核心人生场景
+// ============================================================
+// 每个场景包含：标题、叙事文本、三个选项及其维度影响
+// 编辑提示：delta 为正数表示增加，负数表示减少，范围 0-100
+// ============================================================
+
 import type { Scene } from '../types/game';
 
 export const SCENES: Scene[] = [
-  // Turn 0: Girlhood (0-12岁)
+  // ── Turn 0: Girlhood (0-12岁) ──────────────────────────────
+
   {
     id: 'girlhood-1',
     turn: 'Girlhood',
@@ -45,7 +53,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 1: The Threshold (12-18岁)
+  // ── Turn 1: The Threshold (12-18岁) ────────────────────────
+
   {
     id: 'threshold-1',
     turn: 'The Threshold',
@@ -89,7 +98,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 2: First World (18-28岁)
+  // ── Turn 2: First World (18-28岁) ──────────────────────────
+
   {
     id: 'firstworld-1',
     turn: 'First World',
@@ -133,7 +143,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 3: The Contraction (28-38岁)
+  // ── Turn 3: The Contraction (28-38岁) ──────────────────────
+
   {
     id: 'contraction-1',
     turn: 'The Contraction',
@@ -177,7 +188,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 4: Midgame Reckoning (38-50岁)
+  // ── Turn 4: Midgame Reckoning (38-50岁) ────────────────────
+
   {
     id: 'midgame-1',
     turn: 'Midgame Reckoning',
@@ -221,7 +233,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 5: Second Wind (50-65岁)
+  // ── Turn 5: Second Wind (50-65岁) ──────────────────────────
+
   {
     id: 'secondwind-1',
     turn: 'Second Wind',
@@ -265,7 +278,8 @@ export const SCENES: Scene[] = [
     ],
   },
 
-  // Turn 6: Legacy (65岁+)
+  // ── Turn 6: Legacy (65岁+) ─────────────────────────────────
+
   {
     id: 'legacy-1',
     turn: 'Legacy',

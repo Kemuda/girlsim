@@ -7,8 +7,7 @@ import type {
   ThresholdCard,
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
-import { SCENES } from '../constants/scenes';
-import { THRESHOLD_CARDS } from '../constants/thresholds';
+import { SCENES, THRESHOLD_CARDS } from '../content';
 
 interface GameState {
   phase: GamePhase;
@@ -125,7 +124,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'ADVANCE_TURN': {
-      // Find next scene
       const nextSceneIdx = state.currentSceneIndex + 1;
       const nextScene = SCENES[nextSceneIdx];
 
@@ -133,12 +131,10 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         return { ...state, phase: 'ending' };
       }
 
-      // Check if we're entering a new turn - maybe trigger threshold
       const currentTurn = state.currentTurnIndex;
       const newTurn = nextScene.turnIndex;
 
       if (newTurn > currentTurn) {
-        // Entering a new life phase - chance for threshold event
         const available = THRESHOLD_CARDS.filter(
           (t) => !state.thresholdsUsed.includes(t.id)
         );
