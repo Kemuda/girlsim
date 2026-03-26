@@ -1,4 +1,5 @@
 import type { CharacterState, DimensionKey } from '../types/game';
+import { UI_TEXT } from '../content';
 import StatBar from './StatBar';
 
 interface StatPanelProps {
@@ -19,7 +20,7 @@ export default function StatPanel({ state, prevState }: StatPanelProps) {
   return (
     <div className="bg-bg-card rounded-lg p-4 space-y-2">
       <h3 className="text-xs text-text-secondary uppercase tracking-wider mb-3">
-        内在维度
+        {UI_TEXT.gameScreen.statPanelTitle}
       </h3>
       {DIMENSIONS.map((dim) => (
         <StatBar

@@ -1,3 +1,5 @@
+import { UI_TEXT } from '../content';
+
 interface ChoiceCardProps {
   text: string;
   index: number;
@@ -17,7 +19,7 @@ export default function ChoiceCard({ text, index, onSelect, disabled }: ChoiceCa
     >
       <div className="flex items-start gap-3">
         <span className="text-accent/60 text-sm mt-0.5 group-hover:text-accent transition-colors">
-          {['一', '二', '三'][index]}
+          {UI_TEXT.gameScreen.choiceLabels[index]}
         </span>
         <span className="text-text-primary leading-relaxed">{text}</span>
       </div>

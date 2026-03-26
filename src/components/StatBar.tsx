@@ -1,13 +1,5 @@
 import type { DimensionKey } from '../types/game';
-
-const DIM_CONFIG: Record<DimensionKey, { label: string; color: string; icon: string }> = {
-  Coherence: { label: '凝聚', color: 'bg-coherence', icon: '◈' },
-  Depth: { label: '深度', color: 'bg-depth', icon: '◉' },
-  Regeneration: { label: '再生', color: 'bg-regeneration', icon: '❋' },
-  Transmission: { label: '传递', color: 'bg-transmission', icon: '◎' },
-  Body: { label: '身体', color: 'bg-body', icon: '♡' },
-  Shadow: { label: '暗影', color: 'bg-shadow-dim', icon: '◐' },
-};
+import { DIMENSION_DISPLAY } from '../content';
 
 interface StatBarProps {
   dimension: DimensionKey;
@@ -16,7 +8,7 @@ interface StatBarProps {
 }
 
 export default function StatBar({ dimension, value, prevValue }: StatBarProps) {
-  const config = DIM_CONFIG[dimension];
+  const config = DIMENSION_DISPLAY[dimension];
   const delta = prevValue !== undefined ? value - prevValue : 0;
 
   return (

@@ -1,7 +1,14 @@
+// ============================================================
+// 阈值事件（命运卡）— 在人生阶段转换时随机触发
+// ============================================================
+// 四种类型：Disruption(打断) / Opening(契机) / Mirror(镜像) / Ghost(幽灵)
+// ============================================================
+
 import type { ThresholdCard } from '../types/game';
 
 export const THRESHOLD_CARDS: ThresholdCard[] = [
-  // Disruption events
+  // ── Disruption 打断 ────────────────────────────────────────
+
   {
     id: 'disruption-loss',
     category: 'Disruption',
@@ -43,7 +50,8 @@ export const THRESHOLD_CARDS: ThresholdCard[] = [
     ],
   },
 
-  // Opening events
+  // ── Opening 契机 ───────────────────────────────────────────
+
   {
     id: 'opening-encounter',
     category: 'Opening',
@@ -85,7 +93,8 @@ export const THRESHOLD_CARDS: ThresholdCard[] = [
     ],
   },
 
-  // Mirror events
+  // ── Mirror 镜像 ────────────────────────────────────────────
+
   {
     id: 'mirror-feedback',
     category: 'Mirror',
@@ -107,7 +116,8 @@ export const THRESHOLD_CARDS: ThresholdCard[] = [
     ],
   },
 
-  // Ghost events
+  // ── Ghost 幽灵 ─────────────────────────────────────────────
+
   {
     id: 'ghost-dream',
     category: 'Ghost',
