@@ -12,7 +12,9 @@
 
 ---
 
-## 快速开始
+## I. 试玩 MVP
+
+现在有一个可运行的最小版本，展示了游戏的核心玩法。内容还在迭代，但流程完整，可以体验从童年到暮年的全部七个阶段。想在本地跑起来，按以下步骤操作：
 
 ### 1. 安装 Node.js
 
@@ -36,13 +38,13 @@ npm run dev
 
 > 没装 git？去 [git-scm.com](https://git-scm.com/) 下载，或者在 GitHub 页面点 **Code → Download ZIP**，解压后 `cd` 到目录，执行后两行即可。
 
-### 4. 开始游戏
+### 4. 打开浏览器
 
 终端会显示 `Local: http://localhost:5173`。浏览器打开这个地址就能玩。`Ctrl + C` 停止服务。
 
 ---
 
-## 游戏内容
+## II. 游戏内容
 
 - **7 个人生阶段**：Girlhood (0-12) → The Threshold (12-18) → First World (18-28) → The Contraction (28-38) → Midgame Reckoning (38-50) → Second Wind (50-65) → Legacy (65+)
 - **14 个核心场景**：每个阶段 2 个关键时刻，每个时刻 3 个选项
@@ -52,11 +54,11 @@ npm run dev
 
 ---
 
-## 如何参与
+## III. 如何参与
 
 这个项目欢迎所有人参与，不需要会写代码。
 
-### 你可以做什么
+### 1. 你可以做什么
 
 | 参与方式 | 门槛 | 具体内容 |
 |---------|------|---------|
@@ -66,7 +68,7 @@ npm run dev
 | **试玩反馈** | 会玩游戏就行 | 玩一遍，告诉我们哪里不对劲 |
 | **写代码** | React + TypeScript | 新功能、bug 修复、UI 改进 |
 
-### 改文案：只动 `src/content/`
+### 2. 改文案：只动 `src/content/`
 
 所有游戏文本集中在 `src/content/` 目录下，与代码完全分离：
 
@@ -81,7 +83,7 @@ npm run dev
 
 不需要懂 React 或 TypeScript。文件结构很直观——找到想改的文字，改掉，保存，刷新浏览器即可看到效果。
 
-### 讨论想法：去 Issues
+### 3. 讨论想法：去 Issues
 
 [Issues 页面](https://github.com/Kemuda/girlsim/issues) 是我们讨论的地方。适合聊的话题：
 
@@ -91,7 +93,7 @@ npm run dev
 - 游戏机制的改进想法
 - 任何觉得不对劲的地方
 
-### 提交改动：Fork → 修改 → PR
+### 4. 提交改动：Fork → 修改 → PR
 
 不熟悉 GitHub 也没关系，跟着步骤来：
 
@@ -119,7 +121,7 @@ npm run dev
 
 ---
 
-## 项目结构
+## IV. 项目结构
 
 ```
 src/
