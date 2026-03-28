@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-wood: #4CAF50;
+  --color-fire: #E53935;
+  --color-earth: #D4A017;
+  --color-metal: #B0BEC5;
+  --color-water: #1565C0;
+  --color-bg: #1a1a2e;
+  --color-surface: #16213e;
+  --color-surface-light: #1f3056;
+  --color-text: #e8e8e8;
+  --color-text-muted: #999;
+  --color-accent: #e94560;
+  --color-correct: #4CAF50;
+  --color-wrong: #E53935;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  margin: 0;
+}
