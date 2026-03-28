@@ -7,39 +7,42 @@ import type { WuXing } from '../engine/wuxing.ts';
 interface Props {
   analysis: Analysis;
   onNext: () => void;
+  onAnswer?: (correct: boolean) => void;
 }
 
-export default function StepDayMaster({ analysis, onNext }: Props) {
+export default function StepDayMaster({ analysis, onNext, onAnswer }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const correct = analysis.dayMaster;
   const isCorrect = selected === correct;
 
+  function handleSubmit() {
+    setAnswered(true);
+    onAnswer?.(selected === correct);
+  }
+
   return (
-    <div className="card mb-4">
+    <div className="card mb-4 animate-fade-in">
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">第一关</span>
+        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">日主</span>
         <h3 className="text-lg font-bold">识别日主</h3>
       </div>
 
       <p className="text-[--color-text-secondary] mb-5 leading-relaxed">
         日主是日柱的<strong className="text-[--color-text]">天干</strong>（上面那个字）。
-        它是整个命盘的坐标原点——所有十神都相对于它来计算。
+        它是整个命盘的坐标原点。
       </p>
 
       {!answered && !showHint && (
-        <button
-          onClick={() => setShowHint(true)}
-          className="text-xs text-[--color-text-muted] hover:text-[--color-accent] mb-4 transition-colors"
-        >
+        <button onClick={() => setShowHint(true)} className="text-xs text-[--color-text-muted] hover:text-[--color-accent] mb-4 transition-colors">
           需要提示？
         </button>
       )}
 
       {showHint && !answered && (
         <div className="text-sm bg-[--color-surface-light] rounded-lg p-3 mb-4 border-l-2 border-[--color-gold] animate-fade-in">
-          看上面的命盘图。四柱从左到右是年、月、日、时。日柱是第三列，天干在上面。
+          看命盘图。四柱从左到右是年、月、日、时。日柱是第三列，天干在上面。
         </div>
       )}
 
@@ -66,26 +69,19 @@ export default function StepDayMaster({ analysis, onNext }: Props) {
       </div>
 
       {!answered && (
-        <button onClick={() => setAnswered(true)} disabled={!selected} className="btn-primary">
-          确认
-        </button>
+        <button onClick={handleSubmit} disabled={!selected} className="btn-primary">确认</button>
       )}
 
       {answered && (
         <div className="animate-slide-up">
-          <div className={`text-lg font-bold mb-3 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
+          <div className={`font-bold mb-3 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
             {isCorrect ? '正确' : `正确答案是 ${correct}`}
           </div>
           <div className="bg-[--color-surface-light] rounded-lg p-4 mb-4 text-sm leading-relaxed">
-            <p>
-              日主 <strong style={{ color: WUXING_COLORS[analysis.dayMasterWuxing as WuXing] }}>{correct}</strong>
-              ，属{analysis.dayMasterWuxing}。
-              接下来的所有分析——十神、身强弱、月柱主题——都以{correct}为原点。
-            </p>
+            日主 <strong style={{ color: WUXING_COLORS[analysis.dayMasterWuxing as WuXing] }}>{correct}</strong>，
+            属{analysis.dayMasterWuxing}，{analysis.dayMasterYinYang}。
           </div>
-          <button onClick={onNext} className="btn-primary">
-            下一关 →
-          </button>
+          <button onClick={onNext} className="btn-primary">下一题 →</button>
         </div>
       )}
     </div>

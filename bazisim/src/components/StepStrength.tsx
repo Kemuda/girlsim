@@ -5,36 +5,36 @@ import type { StrengthLevel } from '../engine/strength.ts';
 interface Props {
   analysis: Analysis;
   onNext: () => void;
+  onAnswer?: (correct: boolean) => void;
 }
 
-const LEVELS: { level: StrengthLevel; label: string }[] = [
-  { level: '极弱', label: '极弱' },
-  { level: '偏弱', label: '偏弱' },
-  { level: '中和', label: '中和' },
-  { level: '偏强', label: '偏强' },
-  { level: '极强', label: '极强' },
-];
+const LEVELS: StrengthLevel[] = ['极弱', '偏弱', '中和', '偏强', '极强'];
 
-export default function StepStrength({ analysis, onNext }: Props) {
+export default function StepStrength({ analysis, onNext, onAnswer }: Props) {
   const [selected, setSelected] = useState<StrengthLevel | null>(null);
   const [answered, setAnswered] = useState(false);
   const correct = analysis.strength.level;
   const isCorrect = selected === correct;
 
+  function handleSubmit() {
+    setAnswered(true);
+    onAnswer?.(selected === correct);
+  }
+
   return (
-    <div className="card mb-4">
+    <div className="card mb-4 animate-fade-in">
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">第三关</span>
-        <h3 className="text-lg font-bold">身强身弱</h3>
+        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">身强弱</span>
+        <h3 className="text-lg font-bold">判断身强弱</h3>
       </div>
 
       <p className="text-[--color-text-secondary] mb-5 leading-relaxed text-sm">
-        综合四个因素判断日主的强弱：<br />
-        <strong>得令</strong>（月令是否支持）· <strong>得地</strong>（日支是否有根）· <strong>得生</strong>（有没有生我的）· <strong>得助</strong>（有没有同类）
+        综合四个因素判断：
+        <strong>得令</strong>（月令）· <strong>得地</strong>（日支）· <strong>得生</strong>（有没有生我的）· <strong>得助</strong>（有没有同类）
       </p>
 
       <div className="flex gap-2 mb-5">
-        {LEVELS.map(({ level, label }) => (
+        {LEVELS.map(level => (
           <button
             key={level}
             disabled={answered}
@@ -45,15 +45,13 @@ export default function StepStrength({ analysis, onNext }: Props) {
               !answered && selected === level ? 'selected' : ''
             }`}
           >
-            <div className="font-bold">{label}</div>
+            <div className="font-bold">{level}</div>
           </button>
         ))}
       </div>
 
       {!answered && (
-        <button onClick={() => setAnswered(true)} disabled={!selected} className="btn-primary">
-          确认
-        </button>
+        <button onClick={handleSubmit} disabled={!selected} className="btn-primary">确认</button>
       )}
 
       {answered && (
@@ -62,7 +60,6 @@ export default function StepStrength({ analysis, onNext }: Props) {
             {isCorrect ? '正确' : `系统判断：${correct}`}
           </div>
 
-          {/* Strength bar */}
           <div className="mb-4">
             <div className="flex justify-between text-xs text-[--color-text-muted] mb-1">
               <span>极弱</span><span>极强</span>
@@ -72,13 +69,11 @@ export default function StepStrength({ analysis, onNext }: Props) {
                 className="h-full rounded-full transition-all duration-1000"
                 style={{
                   width: `${analysis.strength.total}%`,
-                  background: `linear-gradient(90deg, var(--color-wrong), var(--color-gold), var(--color-correct))`,
+                  background: 'linear-gradient(90deg, var(--color-wrong), var(--color-gold), var(--color-correct))',
                 }}
               />
             </div>
-            <div className="text-center text-sm mt-1 text-[--color-text-secondary]">
-              {analysis.strength.total} / 100
-            </div>
+            <div className="text-center text-sm mt-1 text-[--color-text-secondary]">{analysis.strength.total} / 100</div>
           </div>
 
           <div className="space-y-2 mb-5">
@@ -95,7 +90,7 @@ export default function StepStrength({ analysis, onNext }: Props) {
             ))}
           </div>
 
-          <button onClick={onNext} className="btn-primary">下一关 →</button>
+          <button onClick={onNext} className="btn-primary">下一题 →</button>
         </div>
       )}
     </div>

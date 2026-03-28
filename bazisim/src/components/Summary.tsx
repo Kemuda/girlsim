@@ -11,6 +11,7 @@ interface Props {
   chart: BaZiChart;
   analysis: Analysis;
   onReset: () => void;
+  onHome?: () => void;
 }
 
 const THEME_CORE: Record<string, string> = {

@@ -18,23 +18,29 @@ const THEME_DESCRIPTIONS: Record<string, string> = {
 interface Props {
   analysis: Analysis;
   onNext: () => void;
+  onAnswer?: (correct: boolean) => void;
 }
 
-export default function StepMonthTheme({ analysis, onNext }: Props) {
+export default function StepMonthTheme({ analysis, onNext, onAnswer }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
   const correct = analysis.monthTheme.shishen;
   const isCorrect = selected === correct;
 
+  function handleSubmit() {
+    setAnswered(true);
+    onAnswer?.(selected === correct);
+  }
+
   return (
-    <div className="card mb-4">
+    <div className="card mb-4 animate-fade-in">
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">第四关</span>
+        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">月柱</span>
         <h3 className="text-lg font-bold">月柱主题</h3>
       </div>
 
       <p className="text-[--color-text-secondary] mb-2 text-sm leading-relaxed">
-        月柱地支的<strong>主气藏干</strong>对日主来说是什么十神？这决定了命主一辈子的核心议题。
+        月柱地支的<strong>主气藏干</strong>对日主来说是什么十神？
       </p>
 
       <div className="bg-[--color-surface-light] rounded-lg p-3 mb-5 text-sm">
@@ -61,7 +67,7 @@ export default function StepMonthTheme({ analysis, onNext }: Props) {
       </div>
 
       {!answered && (
-        <button onClick={() => setAnswered(true)} disabled={!selected} className="btn-primary">确认</button>
+        <button onClick={handleSubmit} disabled={!selected} className="btn-primary">确认</button>
       )}
 
       {answered && (
@@ -70,14 +76,12 @@ export default function StepMonthTheme({ analysis, onNext }: Props) {
             {isCorrect ? '正确' : `正确答案：${correct}`}
           </div>
           <div className="bg-[--color-surface-light] rounded-lg p-4 mb-4">
-            <div className="font-bold text-[--color-accent] text-lg mb-2">
-              月柱主题：{correct}
-            </div>
+            <div className="font-bold text-[--color-accent] text-lg mb-2">月柱主题：{correct}</div>
             <p className="text-sm text-[--color-text-secondary] leading-relaxed">
               {THEME_DESCRIPTIONS[correct] || SHISHEN_INFO[correct].description}
             </p>
           </div>
-          <button onClick={onNext} className="btn-primary">下一关 →</button>
+          <button onClick={onNext} className="btn-primary">下一题 →</button>
         </div>
       )}
     </div>

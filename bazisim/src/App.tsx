@@ -1,88 +1,160 @@
+import { useState } from 'react';
 import { useLearnSession } from './hooks/useLearnSession.ts';
+import type { PracticeMode } from './hooks/useLearnSession.ts';
 import ChartDisplay from './components/ChartDisplay.tsx';
 import StepDayMaster from './components/StepDayMaster.tsx';
 import StepShiShen from './components/StepShiShen.tsx';
 import StepStrength from './components/StepStrength.tsx';
 import StepMonthTheme from './components/StepMonthTheme.tsx';
-import StepTouChou from './components/StepTouChou.tsx';
-import Summary from './components/Summary.tsx';
+import FullMode from './components/FullMode.tsx';
+import DrillWuXing from './components/DrillWuXing.tsx';
+import DrillTianGan from './components/DrillTianGan.tsx';
+import DrillDiZhi from './components/DrillDiZhi.tsx';
 
-const STEPS = [
-  { key: 'daymaster', label: '日主', num: '一' },
-  { key: 'shishen', label: '十神', num: '二' },
-  { key: 'strength', label: '强弱', num: '三' },
-  { key: 'month_theme', label: '月柱', num: '四' },
-  { key: 'touchou', label: '透出', num: '五' },
-  { key: 'summary', label: '总结', num: '六' },
+type DrillMode = 'drill_wuxing' | 'drill_tiangan' | 'drill_dizhi';
+
+const BASICS = [
+  { key: 'drill_wuxing' as DrillMode, title: '五行生克', subtitle: '木火土金水，谁生谁？谁克谁？', icon: '五' },
+  { key: 'drill_tiangan' as DrillMode, title: '天干', subtitle: '甲乙丙丁……的五行和阴阳', icon: '干' },
+  { key: 'drill_dizhi' as DrillMode, title: '地支 · 藏干', subtitle: '子丑寅卯……的五行、阴阳、藏干', icon: '支' },
+];
+
+const PRACTICE = [
+  { key: 'daymaster' as PracticeMode, title: '识别日主', subtitle: '找到命盘的坐标原点', icon: '☉' },
+  { key: 'shishen' as PracticeMode, title: '排十神', subtitle: '判断天干的十神关系', icon: '神' },
+  { key: 'strength' as PracticeMode, title: '判身强弱', subtitle: '得令、得地、得生、得助', icon: '⚖' },
+  { key: 'month_theme' as PracticeMode, title: '月柱主题', subtitle: '月支主气藏干——人生核心议题', icon: '☽' },
+];
+
+const FULL = [
+  { key: 'full' as PracticeMode, title: '完整读盘', subtitle: '从头到尾分析一个命局', icon: '卦' },
 ];
 
 export default function App() {
-  const { chart, step, analysis, startNewChart, nextStep, reset } = useLearnSession();
+  const [drillMode, setDrillMode] = useState<DrillMode | null>(null);
+  const session = useLearnSession();
+  const { chart, mode, analysis, stats, goHome: sessionGoHome, startPractice, nextChart, recordAnswer } = session;
 
-  if (step === 'idle' || !chart || !analysis) {
+  function goHome() {
+    setDrillMode(null);
+    sessionGoHome();
+  }
+
+  // Drill modes (standalone, no chart needed)
+  if (drillMode === 'drill_wuxing') return <DrillWuXing onHome={goHome} />;
+  if (drillMode === 'drill_tiangan') return <DrillTianGan onHome={goHome} />;
+  if (drillMode === 'drill_dizhi') return <DrillDiZhi onHome={goHome} />;
+
+  // Full read mode
+  if (mode === 'full' && chart && analysis) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <div className="animate-fade-in text-center max-w-lg">
-          <div className="text-6xl mb-6 opacity-60">命</div>
-          <h1 className="text-3xl font-bold mb-3 tracking-wide">BaZiSim</h1>
-          <p className="text-[--color-text-secondary] mb-2 text-lg">八字读盘练习</p>
-          <div className="w-12 h-px bg-[--color-accent] mx-auto my-6" />
-          <p className="text-sm text-[--color-text-muted] mb-10 leading-relaxed">
-            系统生成一个虚拟命局，引导你一步步分析：<br />
-            识别日主 → 排十神 → 判身强弱 → 读月柱主题 → 看透出
-          </p>
-          <button onClick={startNewChart} className="btn-primary text-lg px-10 py-3">
-            生成命局
-          </button>
+      <div className="min-h-screen p-4 pb-20 max-w-2xl mx-auto">
+        <Header title="完整读盘" onHome={goHome} />
+        <ChartDisplay chart={chart} />
+        <FullMode chart={chart} analysis={analysis} onReset={nextChart} onHome={goHome} />
+      </div>
+    );
+  }
+
+  // Practice mode (single skill drill with chart)
+  if (mode && chart && analysis) {
+    const modeInfo = [...PRACTICE].find(m => m.key === mode);
+    return (
+      <div className="min-h-screen p-4 pb-20 max-w-2xl mx-auto">
+        <Header title={modeInfo?.title || ''} onHome={goHome} stats={stats} />
+        <ChartDisplay chart={chart} />
+        <div key={chart.day.stem.name + chart.day.branch.name}>
+          {mode === 'daymaster' && <StepDayMaster analysis={analysis} onNext={nextChart} onAnswer={recordAnswer} />}
+          {mode === 'shishen' && <StepShiShen analysis={analysis} onNext={nextChart} onAnswer={recordAnswer} />}
+          {mode === 'strength' && <StepStrength analysis={analysis} onNext={nextChart} onAnswer={recordAnswer} />}
+          {mode === 'month_theme' && <StepMonthTheme analysis={analysis} onNext={nextChart} onAnswer={recordAnswer} />}
         </div>
       </div>
     );
   }
 
-  const stepIdx = STEPS.findIndex(s => s.key === step);
-
+  // Home screen
   return (
-    <div className="min-h-screen p-4 pb-20 max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-lg font-bold tracking-wide">BaZiSim</h1>
-        <button onClick={reset} className="text-sm text-[--color-text-muted] hover:text-[--color-accent] transition-colors">
-          重新开始
-        </button>
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="animate-fade-in text-center max-w-lg w-full">
+        <div className="text-5xl mb-4 opacity-50">命</div>
+        <h1 className="text-3xl font-bold mb-2 tracking-wide">BaZiSim</h1>
+        <p className="text-[--color-text-secondary] mb-8">八字读盘练习</p>
 
-      {/* Progress */}
-      <div className="flex gap-1.5 mb-6">
-        {STEPS.map((s, i) => (
-          <div key={s.key} className="flex-1 flex flex-col items-center gap-1">
-            <div
-              className={`w-full h-1 rounded-full transition-all duration-500 ${
-                i === stepIdx
-                  ? 'bg-[--color-accent]'
-                  : i < stepIdx
-                    ? 'bg-[--color-correct]'
-                    : 'bg-[--color-surface-light]'
-              }`}
-            />
-            <span className={`text-xs transition-colors ${
-              i === stepIdx ? 'text-[--color-accent]' : 'text-[--color-text-muted]'
-            }`}>
-              {s.label}
-            </span>
+        <div className="text-left">
+          <SectionLabel>基础记忆</SectionLabel>
+          <div className="space-y-2 mb-6">
+            {BASICS.map((m, i) => (
+              <ModeButton key={m.key} m={m} delay={i} onClick={() => setDrillMode(m.key)} />
+            ))}
           </div>
-        ))}
-      </div>
 
-      <ChartDisplay chart={chart} />
+          <SectionLabel>读盘技能</SectionLabel>
+          <div className="space-y-2 mb-6">
+            {PRACTICE.map((m, i) => (
+              <ModeButton key={m.key} m={m} delay={i + 3} onClick={() => startPractice(m.key)} />
+            ))}
+          </div>
 
-      <div className="animate-fade-in" key={step}>
-        {step === 'daymaster' && <StepDayMaster analysis={analysis} onNext={nextStep} />}
-        {step === 'shishen' && <StepShiShen analysis={analysis} onNext={nextStep} />}
-        {step === 'strength' && <StepStrength analysis={analysis} onNext={nextStep} />}
-        {step === 'month_theme' && <StepMonthTheme analysis={analysis} onNext={nextStep} />}
-        {step === 'touchou' && <StepTouChou analysis={analysis} onNext={nextStep} />}
-        {step === 'summary' && <Summary chart={chart} analysis={analysis} onReset={reset} />}
+          <SectionLabel>综合练习</SectionLabel>
+          <div className="space-y-2">
+            {FULL.map((m, i) => (
+              <ModeButton key={m.key} m={m} delay={i + 7} onClick={() => startPractice(m.key)} />
+            ))}
+          </div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-xs text-[--color-text-muted] uppercase tracking-widest mb-2 mt-2">{children}</div>
+  );
+}
+
+function ModeButton({ m, delay, onClick }: {
+  m: { icon: string; title: string; subtitle: string };
+  delay: number;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full card flex items-center gap-4 hover:border-[--color-accent] transition-all cursor-pointer animate-fade-in stagger-${delay + 1}`}
+    >
+      <div className="text-xl w-10 h-10 flex items-center justify-center rounded-lg bg-[--color-surface-light] shrink-0">
+        {m.icon}
+      </div>
+      <div className="flex-1 text-left">
+        <div className="font-bold">{m.title}</div>
+        <div className="text-sm text-[--color-text-muted]">{m.subtitle}</div>
+      </div>
+      <div className="text-[--color-text-muted] shrink-0">→</div>
+    </button>
+  );
+}
+
+function Header({ title, onHome, stats }: {
+  title: string;
+  onHome: () => void;
+  stats?: { total: number; correct: number };
+}) {
+  return (
+    <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center gap-3">
+        <button onClick={onHome} className="text-sm text-[--color-text-muted] hover:text-[--color-accent] transition-colors">
+          ← 返回
+        </button>
+        <h1 className="text-lg font-bold">{title}</h1>
+      </div>
+      {stats && stats.total > 0 && (
+        <div className="text-sm text-[--color-text-secondary]">
+          <span className="text-[--color-correct]">{stats.correct}</span>
+          <span className="text-[--color-text-muted]"> / {stats.total}</span>
+        </div>
+      )}
     </div>
   );
 }
