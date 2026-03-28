@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { DIZHI } from '../engine/dizhi.ts';
 import { getTianGan } from '../engine/tiangan.ts';
 import { WUXING_COLORS } from '../engine/wuxing.ts';
@@ -24,7 +24,6 @@ function generateQuestion(): Question {
   const branch = DIZHI[Math.floor(Math.random() * 12)];
   const canggan = branch.canggan.map(c => c.name);
 
-  // Weight: canggan questions 50%, wuxing 25%, yinyang 25%
   const r = Math.random();
   let type: QuestionType;
   if (r < 0.5) type = 'canggan';
@@ -34,7 +33,7 @@ function generateQuestion(): Question {
   if (type === 'wuxing') {
     return {
       type, branchName: branch.name, branchWuxing: branch.wuxing, branchYinYang: branch.yinyang, canggan,
-      prompt: `${branch.name} 的五行是什么？`,
+      prompt: `${branch.name} 的五行？`,
       options: WUXING_OPTIONS,
       answer: branch.wuxing,
     };
@@ -49,16 +48,14 @@ function generateQuestion(): Question {
     };
   }
 
-  // canggan: ask for main hidden stem
   const mainCG = branch.canggan[0].name;
-  // Build options: correct answer + 3 random wrong ones
   const allStems = [...new Set(DIZHI.flatMap(d => d.canggan.map(c => c.name)))];
   const wrong = allStems.filter(s => s !== mainCG).sort(() => Math.random() - 0.5).slice(0, 3);
   const options = [mainCG, ...wrong].sort(() => Math.random() - 0.5);
 
   return {
     type, branchName: branch.name, branchWuxing: branch.wuxing, branchYinYang: branch.yinyang, canggan,
-    prompt: `${branch.name} 的主气藏干是什么？`,
+    prompt: `${branch.name} 的主气藏干？`,
     options,
     answer: mainCG,
   };
@@ -71,7 +68,6 @@ interface Props {
 export default function DrillDiZhi({ onHome }: Props) {
   const [q, setQ] = useState(generateQuestion);
   const [selected, setSelected] = useState<string | null>(null);
-  const [answered, setAnswered] = useState(false);
   const [stats, setStats] = useState({ total: 0, correct: 0 });
 
   const isCorrect = selected === q.answer;
@@ -79,12 +75,19 @@ export default function DrillDiZhi({ onHome }: Props) {
   const next = useCallback(() => {
     setQ(generateQuestion());
     setSelected(null);
-    setAnswered(false);
   }, []);
 
-  function handleSubmit() {
-    setAnswered(true);
-    setStats(s => ({ total: s.total + 1, correct: s.correct + (selected === q.answer ? 1 : 0) }));
+  useEffect(() => {
+    if (selected === null) return;
+    const delay = isCorrect ? 400 : 1200;
+    const timer = setTimeout(next, delay);
+    return () => clearTimeout(timer);
+  }, [selected, isCorrect, next]);
+
+  function handleSelect(opt: string) {
+    if (selected !== null) return;
+    setSelected(opt);
+    setStats(s => ({ total: s.total + 1, correct: s.correct + (opt === q.answer ? 1 : 0) }));
   }
 
   return (
@@ -124,24 +127,21 @@ export default function DrillDiZhi({ onHome }: Props) {
         </div>
       </div>
 
-      <div className="card mb-4 animate-fade-in" key={q.prompt + q.branchName}>
+      <div className="card mb-4" key={q.prompt + q.branchName}>
         <div className="text-center mb-6">
-          <div className="text-5xl font-bold mb-3" style={{ color: WUXING_COLORS[q.branchWuxing] }}>
-            {q.branchName}
-          </div>
+          <div className="text-5xl font-bold mb-3" style={{ color: WUXING_COLORS[q.branchWuxing] }}>{q.branchName}</div>
           <div className="text-lg">{q.prompt}</div>
         </div>
 
-        <div className="flex gap-3 justify-center flex-wrap mb-5">
+        <div className="flex gap-3 justify-center flex-wrap mb-2">
           {q.options.map(opt => (
             <button
               key={opt}
-              disabled={answered}
-              onClick={() => setSelected(opt)}
-              className={`choice-btn px-5 py-3 text-lg ${
-                answered && opt === q.answer ? 'correct' :
-                answered && opt === selected && !isCorrect ? 'wrong' :
-                !answered && selected === opt ? 'selected' : ''
+              disabled={selected !== null}
+              onClick={() => handleSelect(opt)}
+              className={`choice-btn px-5 py-3 text-lg transition-all ${
+                selected !== null && opt === q.answer ? 'correct' :
+                selected === opt && !isCorrect ? 'wrong' : ''
               }`}
               style={q.type === 'wuxing' ? { color: WUXING_COLORS[opt as WuXing] } : undefined}
             >
@@ -150,31 +150,20 @@ export default function DrillDiZhi({ onHome }: Props) {
           ))}
         </div>
 
-        {!answered && (
-          <div className="text-center">
-            <button onClick={handleSubmit} disabled={!selected} className="btn-primary">确认</button>
-          </div>
-        )}
-
-        {answered && (
-          <div className="animate-fade-in text-center">
-            <div className={`font-bold mb-2 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
-              {isCorrect ? '正确' : `正确答案：${q.answer}`}
-            </div>
-            <div className="text-sm mb-3">
-              <span className="text-[--color-text-muted]">{q.branchName}：{q.branchWuxing}{q.branchYinYang}，藏干 </span>
-              {q.canggan.map((name, i) => {
-                const cg = getTianGan(name);
-                return (
-                  <span key={i}>
-                    {i > 0 && <span className="text-[--color-text-muted]"> · </span>}
-                    <span style={{ color: WUXING_COLORS[cg.wuxing] }} className="font-bold">{name}</span>
-                    <span className="text-[--color-text-muted]">({cg.wuxing}{cg.yinyang})</span>
-                  </span>
-                );
-              })}
-            </div>
-            <button onClick={next} className="btn-primary">下一题 →</button>
+        {/* Show full info briefly on wrong answer */}
+        {selected !== null && !isCorrect && (
+          <div className="text-center text-sm mt-4 animate-fade-in">
+            <span className="text-[--color-text-muted]">{q.branchName}：{q.branchWuxing}{q.branchYinYang}，藏干 </span>
+            {q.canggan.map((name, i) => {
+              const cg = getTianGan(name);
+              return (
+                <span key={i}>
+                  {i > 0 && <span className="text-[--color-text-muted]"> · </span>}
+                  <span style={{ color: WUXING_COLORS[cg.wuxing] }} className="font-bold">{name}</span>
+                  <span className="text-[--color-text-muted]">({cg.wuxing}{cg.yinyang})</span>
+                </span>
+              );
+            })}
           </div>
         )}
       </div>
