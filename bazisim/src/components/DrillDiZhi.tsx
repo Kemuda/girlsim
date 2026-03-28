@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { DIZHI } from '../engine/dizhi.ts';
+import { getTianGan } from '../engine/tiangan.ts';
 import { WUXING_COLORS } from '../engine/wuxing.ts';
 import type { WuXing } from '../engine/wuxing.ts';
 
@@ -108,8 +109,15 @@ export default function DrillDiZhi({ onHome }: Props) {
             <div key={d.name} className="bg-[--color-surface-light] rounded p-2">
               <div className="font-bold text-base" style={{ color: WUXING_COLORS[d.wuxing] }}>{d.name}</div>
               <div className="text-[--color-text-muted]">{d.wuxing}{d.yinyang}</div>
-              <div className="text-[--color-text-muted] mt-1">
-                {d.canggan.map(c => c.name).join(' ')}
+              <div className="mt-1 flex flex-col gap-0.5 items-center">
+                {d.canggan.map((c, i) => {
+                  const cg = getTianGan(c.name);
+                  return (
+                    <span key={i} style={{ color: WUXING_COLORS[cg.wuxing] }}>
+                      {c.name}<span className="text-[--color-text-muted]">({cg.wuxing}{cg.yinyang})</span>
+                    </span>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -153,8 +161,18 @@ export default function DrillDiZhi({ onHome }: Props) {
             <div className={`font-bold mb-2 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
               {isCorrect ? '正确' : `正确答案：${q.answer}`}
             </div>
-            <div className="text-sm text-[--color-text-muted] mb-3">
-              {q.branchName}：{q.branchWuxing}{q.branchYinYang}，藏干 {q.canggan.join(' ')}
+            <div className="text-sm mb-3">
+              <span className="text-[--color-text-muted]">{q.branchName}：{q.branchWuxing}{q.branchYinYang}，藏干 </span>
+              {q.canggan.map((name, i) => {
+                const cg = getTianGan(name);
+                return (
+                  <span key={i}>
+                    {i > 0 && <span className="text-[--color-text-muted]"> · </span>}
+                    <span style={{ color: WUXING_COLORS[cg.wuxing] }} className="font-bold">{name}</span>
+                    <span className="text-[--color-text-muted]">({cg.wuxing}{cg.yinyang})</span>
+                  </span>
+                );
+              })}
             </div>
             <button onClick={next} className="btn-primary">下一题 →</button>
           </div>
