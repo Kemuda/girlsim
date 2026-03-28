@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { Analysis } from '../hooks/useLearnSession.ts';
 import { TIANGAN } from '../engine/tiangan.ts';
+import { WUXING_COLORS } from '../engine/wuxing.ts';
+import type { WuXing } from '../engine/wuxing.ts';
 
 interface Props {
   analysis: Analysis;
@@ -10,64 +12,78 @@ interface Props {
 export default function StepDayMaster({ analysis, onNext }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const correct = analysis.dayMaster;
-
-  function handleSubmit() {
-    setAnswered(true);
-  }
-
   const isCorrect = selected === correct;
 
   return (
-    <div className="bg-[--color-surface] rounded-lg p-6 mb-4">
-      <h3 className="text-lg font-bold mb-4">第一关：识别日主</h3>
-      <p className="mb-4 text-[--color-text-muted]">日主是日柱的天干。它决定了你是谁——五行坐标系的原点。</p>
-      <p className="mb-4">这个盘的日主是哪个天干？</p>
+    <div className="card mb-4">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">第一关</span>
+        <h3 className="text-lg font-bold">识别日主</h3>
+      </div>
 
-      <div className="grid grid-cols-5 gap-2 mb-4">
-        {TIANGAN.map(tg => (
+      <p className="text-[--color-text-secondary] mb-5 leading-relaxed">
+        日主是日柱的<strong className="text-[--color-text]">天干</strong>（上面那个字）。
+        它是整个命盘的坐标原点——所有十神都相对于它来计算。
+      </p>
+
+      {!answered && !showHint && (
+        <button
+          onClick={() => setShowHint(true)}
+          className="text-xs text-[--color-text-muted] hover:text-[--color-accent] mb-4 transition-colors"
+        >
+          需要提示？
+        </button>
+      )}
+
+      {showHint && !answered && (
+        <div className="text-sm bg-[--color-surface-light] rounded-lg p-3 mb-4 border-l-2 border-[--color-gold] animate-fade-in">
+          看上面的命盘图。四柱从左到右是年、月、日、时。日柱是第三列，天干在上面。
+        </div>
+      )}
+
+      <p className="mb-3 text-sm">这个盘的日主是？</p>
+
+      <div className="grid grid-cols-5 gap-2 mb-5">
+        {TIANGAN.map((tg, i) => (
           <button
             key={tg.name}
-            onClick={() => !answered && setSelected(tg.name)}
-            className={`py-2 px-3 rounded text-center transition-colors ${
-              answered && tg.name === correct
-                ? 'bg-[--color-correct] text-white'
-                : answered && tg.name === selected && !isCorrect
-                  ? 'bg-[--color-wrong] text-white'
-                  : selected === tg.name
-                    ? 'bg-[--color-surface-light] ring-1 ring-[--color-accent]'
-                    : 'bg-[--color-surface-light] hover:bg-[--color-surface-light]/80'
+            disabled={answered}
+            onClick={() => setSelected(tg.name)}
+            className={`choice-btn animate-fade-in stagger-${i + 1} ${
+              answered && tg.name === correct ? 'correct' :
+              answered && tg.name === selected && !isCorrect ? 'wrong' :
+              !answered && selected === tg.name ? 'selected' : ''
             }`}
           >
-            {tg.name}
+            <div className="text-lg font-bold" style={{ color: WUXING_COLORS[tg.wuxing as WuXing] }}>
+              {tg.name}
+            </div>
             <div className="text-xs text-[--color-text-muted]">{tg.wuxing}{tg.yinyang}</div>
           </button>
         ))}
       </div>
 
       {!answered && (
-        <button
-          onClick={handleSubmit}
-          disabled={!selected}
-          className="bg-[--color-accent] text-white px-6 py-2 rounded disabled:opacity-50"
-        >
+        <button onClick={() => setAnswered(true)} disabled={!selected} className="btn-primary">
           确认
         </button>
       )}
 
       {answered && (
-        <div className="mt-4">
-          <div className={`text-lg font-bold ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
-            {isCorrect ? '✓ 正确！' : `✗ 不对。正确答案是 ${correct}`}
+        <div className="animate-slide-up">
+          <div className={`text-lg font-bold mb-3 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
+            {isCorrect ? '正确' : `正确答案是 ${correct}`}
           </div>
-          <p className="text-[--color-text-muted] mt-2">
-            日主 {correct}，{analysis.dayMasterWuxing}，
-            是这个命盘的坐标原点。所有十神都相对于它来计算。
-          </p>
-          <button
-            onClick={onNext}
-            className="mt-4 bg-[--color-accent] text-white px-6 py-2 rounded"
-          >
+          <div className="bg-[--color-surface-light] rounded-lg p-4 mb-4 text-sm leading-relaxed">
+            <p>
+              日主 <strong style={{ color: WUXING_COLORS[analysis.dayMasterWuxing as WuXing] }}>{correct}</strong>
+              ，属{analysis.dayMasterWuxing}。
+              接下来的所有分析——十神、身强弱、月柱主题——都以{correct}为原点。
+            </p>
+          </div>
+          <button onClick={onNext} className="btn-primary">
             下一关 →
           </button>
         </div>

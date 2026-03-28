@@ -7,7 +7,14 @@ import StepMonthTheme from './components/StepMonthTheme.tsx';
 import StepTouChou from './components/StepTouChou.tsx';
 import Summary from './components/Summary.tsx';
 
-const STEP_LABELS = ['日主', '十神', '身强弱', '月柱主题', '透出', '总结'];
+const STEPS = [
+  { key: 'daymaster', label: '日主', num: '一' },
+  { key: 'shishen', label: '十神', num: '二' },
+  { key: 'strength', label: '强弱', num: '三' },
+  { key: 'month_theme', label: '月柱', num: '四' },
+  { key: 'touchou', label: '透出', num: '五' },
+  { key: 'summary', label: '总结', num: '六' },
+];
 
 export default function App() {
   const { chart, step, analysis, startNewChart, nextStep, reset } = useLearnSession();
@@ -15,58 +22,67 @@ export default function App() {
   if (step === 'idle' || !chart || !analysis) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6">
-        <h1 className="text-3xl font-bold mb-2">BaZiSim</h1>
-        <p className="text-[--color-text-muted] mb-1">八字学习模式</p>
-        <p className="text-sm text-[--color-text-muted] mb-8 text-center max-w-md">
-          系统生成一个虚拟命局，引导你一步步分析：识别日主 → 排十神 → 判身强弱 → 读月柱主题 → 看透出。
-        </p>
-        <button
-          onClick={startNewChart}
-          className="bg-[--color-accent] text-white px-8 py-3 rounded-lg text-lg hover:opacity-90 transition-opacity"
-        >
-          生成命局
-        </button>
+        <div className="animate-fade-in text-center max-w-lg">
+          <div className="text-6xl mb-6 opacity-60">命</div>
+          <h1 className="text-3xl font-bold mb-3 tracking-wide">BaZiSim</h1>
+          <p className="text-[--color-text-secondary] mb-2 text-lg">八字读盘练习</p>
+          <div className="w-12 h-px bg-[--color-accent] mx-auto my-6" />
+          <p className="text-sm text-[--color-text-muted] mb-10 leading-relaxed">
+            系统生成一个虚拟命局，引导你一步步分析：<br />
+            识别日主 → 排十神 → 判身强弱 → 读月柱主题 → 看透出
+          </p>
+          <button onClick={startNewChart} className="btn-primary text-lg px-10 py-3">
+            生成命局
+          </button>
+        </div>
       </div>
     );
   }
 
-  const stepIdx = ['daymaster', 'shishen', 'strength', 'month_theme', 'touchou', 'summary'].indexOf(step);
+  const stepIdx = STEPS.findIndex(s => s.key === step);
 
   return (
-    <div className="min-h-screen p-4 max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">BaZiSim</h1>
-        <button onClick={reset} className="text-sm text-[--color-text-muted] hover:text-white">
+    <div className="min-h-screen p-4 pb-20 max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-lg font-bold tracking-wide">BaZiSim</h1>
+        <button onClick={reset} className="text-sm text-[--color-text-muted] hover:text-[--color-accent] transition-colors">
           重新开始
         </button>
       </div>
 
       {/* Progress */}
-      <div className="flex gap-1 mb-4">
-        {STEP_LABELS.map((label, i) => (
-          <div
-            key={label}
-            className={`flex-1 text-center text-xs py-1 rounded ${
-              i === stepIdx
-                ? 'bg-[--color-accent] text-white'
-                : i < stepIdx
-                  ? 'bg-[--color-correct]/30 text-[--color-correct]'
-                  : 'bg-[--color-surface-light] text-[--color-text-muted]'
-            }`}
-          >
-            {label}
+      <div className="flex gap-1.5 mb-6">
+        {STEPS.map((s, i) => (
+          <div key={s.key} className="flex-1 flex flex-col items-center gap-1">
+            <div
+              className={`w-full h-1 rounded-full transition-all duration-500 ${
+                i === stepIdx
+                  ? 'bg-[--color-accent]'
+                  : i < stepIdx
+                    ? 'bg-[--color-correct]'
+                    : 'bg-[--color-surface-light]'
+              }`}
+            />
+            <span className={`text-xs transition-colors ${
+              i === stepIdx ? 'text-[--color-accent]' : 'text-[--color-text-muted]'
+            }`}>
+              {s.label}
+            </span>
           </div>
         ))}
       </div>
 
       <ChartDisplay chart={chart} />
 
-      {step === 'daymaster' && <StepDayMaster analysis={analysis} onNext={nextStep} />}
-      {step === 'shishen' && <StepShiShen analysis={analysis} onNext={nextStep} />}
-      {step === 'strength' && <StepStrength analysis={analysis} onNext={nextStep} />}
-      {step === 'month_theme' && <StepMonthTheme analysis={analysis} onNext={nextStep} />}
-      {step === 'touchou' && <StepTouChou analysis={analysis} onNext={nextStep} />}
-      {step === 'summary' && <Summary chart={chart} analysis={analysis} onReset={reset} />}
+      <div className="animate-fade-in" key={step}>
+        {step === 'daymaster' && <StepDayMaster analysis={analysis} onNext={nextStep} />}
+        {step === 'shishen' && <StepShiShen analysis={analysis} onNext={nextStep} />}
+        {step === 'strength' && <StepStrength analysis={analysis} onNext={nextStep} />}
+        {step === 'month_theme' && <StepMonthTheme analysis={analysis} onNext={nextStep} />}
+        {step === 'touchou' && <StepTouChou analysis={analysis} onNext={nextStep} />}
+        {step === 'summary' && <Summary chart={chart} analysis={analysis} onReset={reset} />}
+      </div>
     </div>
   );
 }

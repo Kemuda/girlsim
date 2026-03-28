@@ -7,7 +7,13 @@ interface Props {
   onNext: () => void;
 }
 
-const LEVELS: StrengthLevel[] = ['极弱', '偏弱', '中和', '偏强', '极强'];
+const LEVELS: { level: StrengthLevel; label: string }[] = [
+  { level: '极弱', label: '极弱' },
+  { level: '偏弱', label: '偏弱' },
+  { level: '中和', label: '中和' },
+  { level: '偏强', label: '偏强' },
+  { level: '极强', label: '极强' },
+];
 
 export default function StepStrength({ analysis, onNext }: Props) {
   const [selected, setSelected] = useState<StrengthLevel | null>(null);
@@ -16,69 +22,80 @@ export default function StepStrength({ analysis, onNext }: Props) {
   const isCorrect = selected === correct;
 
   return (
-    <div className="bg-[--color-surface] rounded-lg p-6 mb-4">
-      <h3 className="text-lg font-bold mb-4">第三关：判断身强弱</h3>
-      <p className="mb-4 text-[--color-text-muted]">
-        综合得令、得地、得生、得助四个因素，你觉得日主 {analysis.dayMaster} 是身强还是身弱？
+    <div className="card mb-4">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-xs px-2 py-1 rounded bg-[--color-accent]/20 text-[--color-accent]">第三关</span>
+        <h3 className="text-lg font-bold">身强身弱</h3>
+      </div>
+
+      <p className="text-[--color-text-secondary] mb-5 leading-relaxed text-sm">
+        综合四个因素判断日主的强弱：<br />
+        <strong>得令</strong>（月令是否支持）· <strong>得地</strong>（日支是否有根）· <strong>得生</strong>（有没有生我的）· <strong>得助</strong>（有没有同类）
       </p>
 
-      <div className="flex gap-2 mb-6">
-        {LEVELS.map(level => (
+      <div className="flex gap-2 mb-5">
+        {LEVELS.map(({ level, label }) => (
           <button
             key={level}
-            onClick={() => !answered && setSelected(level)}
-            className={`flex-1 py-3 rounded text-center transition-colors ${
-              answered && level === correct
-                ? 'bg-[--color-correct] text-white'
-                : answered && level === selected && !isCorrect
-                  ? 'bg-[--color-wrong] text-white'
-                  : selected === level
-                    ? 'bg-[--color-surface-light] ring-1 ring-[--color-accent]'
-                    : 'bg-[--color-surface-light] hover:bg-[--color-surface-light]/80'
+            disabled={answered}
+            onClick={() => setSelected(level)}
+            className={`choice-btn flex-1 py-3 ${
+              answered && level === correct ? 'correct' :
+              answered && level === selected && !isCorrect ? 'wrong' :
+              !answered && selected === level ? 'selected' : ''
             }`}
           >
-            {level}
+            <div className="font-bold">{label}</div>
           </button>
         ))}
       </div>
 
       {!answered && (
-        <button
-          onClick={() => setAnswered(true)}
-          disabled={!selected}
-          className="bg-[--color-accent] text-white px-6 py-2 rounded disabled:opacity-50"
-        >
+        <button onClick={() => setAnswered(true)} disabled={!selected} className="btn-primary">
           确认
         </button>
       )}
 
       {answered && (
-        <div className="mt-4">
-          <div className={`text-lg font-bold ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
-            {isCorrect ? '✓ 正确！' : `✗ 系统判断为「${correct}」`}
+        <div className="animate-slide-up">
+          <div className={`font-bold mb-3 ${isCorrect ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
+            {isCorrect ? '正确' : `系统判断：${correct}`}
           </div>
 
-          <div className="mt-4 space-y-3">
-            <div className="text-sm font-bold">分析依据（总分 {analysis.strength.total}/100）：</div>
+          {/* Strength bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-[--color-text-muted] mb-1">
+              <span>极弱</span><span>极强</span>
+            </div>
+            <div className="h-3 bg-[--color-surface-light] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-1000"
+                style={{
+                  width: `${analysis.strength.total}%`,
+                  background: `linear-gradient(90deg, var(--color-wrong), var(--color-gold), var(--color-correct))`,
+                }}
+              />
+            </div>
+            <div className="text-center text-sm mt-1 text-[--color-text-secondary]">
+              {analysis.strength.total} / 100
+            </div>
+          </div>
+
+          <div className="space-y-2 mb-5">
             {analysis.strength.factors.map(f => (
-              <div key={f.name} className="bg-[--color-surface-light] rounded p-3">
+              <div key={f.name} className="bg-[--color-surface-light] rounded-lg p-3">
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-bold text-sm">{f.name}</span>
-                  <span className={`text-sm ${f.score >= 0 ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
-                    {f.score >= 0 ? '+' : ''}{f.score}
+                  <span className={`text-sm font-mono ${f.score >= 0 ? 'text-[--color-correct]' : 'text-[--color-wrong]'}`}>
+                    {f.score >= 0 ? '+' : ''}{Math.round(f.score)}
                   </span>
                 </div>
-                <div className="text-xs text-[--color-text-muted]">{f.explanation}</div>
+                <div className="text-xs text-[--color-text-muted] leading-relaxed">{f.explanation}</div>
               </div>
             ))}
           </div>
 
-          <button
-            onClick={onNext}
-            className="mt-4 bg-[--color-accent] text-white px-6 py-2 rounded"
-          >
-            下一关 →
-          </button>
+          <button onClick={onNext} className="btn-primary">下一关 →</button>
         </div>
       )}
     </div>
