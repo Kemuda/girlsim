@@ -1,4 +1,4 @@
-import type { CharacterState, HistoryEntry } from '../types/game';
+import type { CharacterState, GameMode, HistoryEntry } from '../types/game';
 import {
   NARRATION_TEMPLATES,
   NARRATION_CONNECTORS,
@@ -6,6 +6,8 @@ import {
   SHADOW_HIGH_SUFFIX,
   REGENERATION_HIGH_SUFFIX,
   DEFAULT_TRANSITION,
+  SHADOW_NARRATION,
+  SHADOW_CONNECTORS,
 } from '../content';
 
 function getHighestDimension(state: CharacterState): string {
@@ -23,8 +25,15 @@ function pickRandom<T>(arr: T[]): T {
 export function generateNarration(
   state: CharacterState,
   choiceText: string,
-  _history: HistoryEntry[] // eslint-disable-line @typescript-eslint/no-unused-vars
+  _history: HistoryEntry[],
+  mode: GameMode = 'full'
 ): string {
+  if (mode === 'shadow') {
+    const connector = pickRandom(SHADOW_CONNECTORS);
+    const line = pickRandom(SHADOW_NARRATION);
+    return `${connector}「${choiceText}」。\n\n${line}`;
+  }
+
   const category = getHighestDimension(state);
   const templates = NARRATION_TEMPLATES[category] || NARRATION_TEMPLATES.generic;
   const base = pickRandom(templates);

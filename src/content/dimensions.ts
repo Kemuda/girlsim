@@ -13,37 +13,37 @@ export interface DimensionDisplay {
 
 export const DIMENSION_DISPLAY: Record<DimensionKey, DimensionDisplay> = {
   Coherence: {
-    label: '凝聚',
+    label: '志',
     icon: '◈',
     color: 'bg-coherence',
     description: '方向感与意志力——你知道自己要走向哪里',
   },
   Depth: {
-    label: '深度',
+    label: '幽',
     icon: '◉',
     color: 'bg-depth',
-    description: '内在世界的丰富程度——你看到了别人看不到的东西',
+    description: '内在世界的丰富——你看到了别人看不到的东西',
   },
   Regeneration: {
-    label: '再生',
+    label: '韧',
     icon: '❋',
     color: 'bg-regeneration',
     description: '复原力——无论冬天多长，你总会重新发芽',
   },
   Transmission: {
-    label: '传递',
+    label: '渡',
     icon: '◎',
     color: 'bg-transmission',
     description: '与他人的联结——你的涟漪扩散到了看不见的地方',
   },
   Body: {
-    label: '身体',
+    label: '身',
     icon: '♡',
     color: 'bg-body',
     description: '身体的智慧——先照顾好自己，才能照顾好一切',
   },
   Shadow: {
-    label: '暗影',
+    label: '影',
     icon: '◐',
     color: 'bg-shadow-dim',
     description: '被压抑的部分——那些没有说出口的，并没有消失',

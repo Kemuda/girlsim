@@ -28,7 +28,8 @@ export default function GameScreen() {
         const narration = generateNarration(
           state.characterState,
           choice.text,
-          state.history
+          state.history,
+          state.mode
         );
 
         if (state.phase === 'threshold') {
