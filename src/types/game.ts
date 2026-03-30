@@ -42,6 +42,8 @@ export interface HistoryEntry {
 
 export type GamePhase = 'start' | 'playing' | 'threshold' | 'transition' | 'ending';
 
+export type GameMode = 'full' | 'shadow';
+
 export interface TurnInfo {
   name: string;
   ageRange: string;

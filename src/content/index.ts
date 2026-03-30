@@ -24,3 +24,5 @@ export {
 } from './narration';
 export { DIMENSION_DISPLAY, type DimensionDisplay } from './dimensions';
 export { UI_TEXT } from './ui';
+export { SHADOW_SCENES, SHADOW_TURNS } from './shadow-scenes';
+export { SHADOW_ENDINGS, determineShadowEnding, type ShadowEndingData } from './shadow-endings';

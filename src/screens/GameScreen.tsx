@@ -1,6 +1,6 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useGame } from '../context/GameContext';
-import { UI_TEXT } from '../content';
+import { UI_TEXT, SHADOW_TURNS } from '../content';
 import StatPanel from '../components/StatPanel';
 import ChoiceCard from '../components/ChoiceCard';
 import NarrativeText from '../components/NarrativeText';
@@ -9,7 +9,7 @@ import { generateNarration } from '../services/narrator';
 
 export default function GameScreen() {
   const { state, dispatch } = useGame();
-  const prevStateRef = useRef(state.characterState);
+  const [prevState, setPrevState] = useState(state.characterState);
   const t = UI_TEXT.gameScreen;
 
   const handleChoice = useCallback(
@@ -20,7 +20,7 @@ export default function GameScreen() {
       if (!scene) return;
 
       const choice = scene.choices[index];
-      prevStateRef.current = state.characterState;
+      setPrevState(state.characterState);
 
       dispatch({ type: 'SET_LOADING', loading: true });
 
@@ -43,7 +43,7 @@ export default function GameScreen() {
   );
 
   const handleContinue = useCallback(() => {
-    prevStateRef.current = state.characterState;
+    setPrevState(state.characterState);
     dispatch({ type: 'ADVANCE_TURN' });
   }, [state.characterState, dispatch]);
 
@@ -51,10 +51,15 @@ export default function GameScreen() {
 
   if (!scene) return null;
 
+  const isShadow = state.mode === 'shadow';
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="px-6 py-4 border-b border-white/5">
-        <TurnIndicator currentIndex={state.currentTurnIndex} />
+        <TurnIndicator
+          currentIndex={state.currentTurnIndex}
+          turns={isShadow ? SHADOW_TURNS : undefined}
+        />
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row">
@@ -108,7 +113,7 @@ export default function GameScreen() {
         <aside className="lg:w-72 px-6 py-8 lg:border-l border-white/5">
           <StatPanel
             state={state.characterState}
-            prevState={prevStateRef.current}
+            prevState={prevState}
           />
           <div className="mt-6 text-xs text-text-secondary">
             <p>{t.choiceCounter(state.history.length)}</p>

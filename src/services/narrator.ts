@@ -23,7 +23,7 @@ function pickRandom<T>(arr: T[]): T {
 export function generateNarration(
   state: CharacterState,
   choiceText: string,
-  _history: HistoryEntry[]
+  _history: HistoryEntry[] // eslint-disable-line @typescript-eslint/no-unused-vars
 ): string {
   const category = getHighestDimension(state);
   const templates = NARRATION_TEMPLATES[category] || NARRATION_TEMPLATES.generic;

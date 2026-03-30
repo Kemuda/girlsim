@@ -1,13 +1,17 @@
 import { TURNS } from '../types/game';
+import type { TurnInfo } from '../types/game';
 
 interface TurnIndicatorProps {
   currentIndex: number;
+  turns?: TurnInfo[];
 }
 
-export default function TurnIndicator({ currentIndex }: TurnIndicatorProps) {
+export default function TurnIndicator({ currentIndex, turns }: TurnIndicatorProps) {
+  const turnList = turns ?? TURNS;
+
   return (
     <div className="flex items-center gap-1">
-      {TURNS.map((turn, i) => (
+      {turnList.map((turn, i) => (
         <div key={i} className="flex items-center">
           <div
             className={`w-2 h-2 rounded-full transition-all duration-500 ${
@@ -17,9 +21,9 @@ export default function TurnIndicator({ currentIndex }: TurnIndicatorProps) {
                   ? 'bg-accent animate-pulse-soft w-3 h-3'
                   : 'bg-bg-hover'
             }`}
-            title={`${turn.name} (${turn.ageRange})`}
+            title={turn.ageRange ? `${turn.name} (${turn.ageRange})` : turn.name}
           />
-          {i < TURNS.length - 1 && (
+          {i < turnList.length - 1 && (
             <div
               className={`w-4 h-px mx-0.5 ${
                 i < currentIndex ? 'bg-accent/50' : 'bg-bg-hover'
@@ -29,7 +33,8 @@ export default function TurnIndicator({ currentIndex }: TurnIndicatorProps) {
         </div>
       ))}
       <span className="ml-3 text-xs text-text-secondary">
-        {TURNS[currentIndex]?.name} · {TURNS[currentIndex]?.ageRange}
+        {turnList[currentIndex]?.name}
+        {turnList[currentIndex]?.ageRange ? ` · ${turnList[currentIndex].ageRange}` : ''}
       </span>
     </div>
   );

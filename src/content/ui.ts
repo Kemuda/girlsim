@@ -14,6 +14,11 @@ export const UI_TEXT = {
     ],
     startButton: '开始旅程',
     tagline: '七个人生阶段 · 十四个关键时刻 · 无数种可能',
+    // Shadow line
+    shadowTitle: '你以为自己在做正确的选择。',
+    shadowDesc: '五个场景。三分钟。',
+    shadowButton: '开始',
+    fullButton: '体验一个女性的完整一生 →',
   },
 
   // ── 游戏中 ──
