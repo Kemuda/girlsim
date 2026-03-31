@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Living Life as a Woman: The Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0f1c;
+  --bg-secondary: #111827;
+  --text-primary: #f0e6d3;
+  --text-secondary: #b8a99a;
+  --accent: #d4a574;
+  --accent-glow: rgba(212,165,116,0.3);
+  --accent2: #7c9885;
+  --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  --font-body: 'Inter', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --slide-padding: clamp(1.5rem, 4vw, 4rem);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; overflow-x:hidden; scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+body { height:100%; background:var(--bg-primary); color:var(--text-primary); font-family:var(--font-body); overflow-x:hidden; }
+
+.slide {
+  width:100vw; height:100vh; height:100dvh;
+  scroll-snap-align:start;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  padding:var(--slide-padding);
+  position:relative; overflow:hidden;
+}
+.slide-content {
+  max-width:1100px; width:100%;
+  display:flex; flex-direction:column;
+  align-items:center; text-align:center;
+  flex:1; justify-content:center;
+}
+h1 { font-family:var(--font-display); font-size:clamp(2rem,6vw,4.5rem); font-weight:700; line-height:1.2; color:var(--text-primary); }
+h2 { font-family:var(--font-display); font-size:clamp(1.5rem,4vw,3rem); font-weight:600; line-height:1.3; color:var(--accent); margin-bottom:clamp(0.8rem,2vw,1.5rem); }
+h3 { font-family:var(--font-display); font-size:clamp(1.1rem,2.5vw,1.8rem); font-weight:600; color:var(--text-primary); }
+p, li { font-size:clamp(0.85rem,1.8vw,1.15rem); line-height:1.7; color:var(--text-secondary); }
+.subtitle { font-family:var(--font-body); font-size:clamp(0.9rem,2vw,1.3rem); color:var(--text-secondary); font-weight:300; letter-spacing:0.05em; }
+.quote {
+  font-family:var(--font-display); font-style:italic;
+  font-size:clamp(1rem,2.5vw,1.6rem); color:var(--accent);
+  border-left:2px solid var(--accent); padding-left:1.5rem;
+  max-width:700px; text-align:left;
+}
+.meta { font-size:clamp(0.7rem,1.2vw,0.9rem); color:var(--text-secondary); opacity:0.6; letter-spacing:0.1em; text-transform:uppercase; }
+
+/* Cards */
+.cards { display:grid; gap:clamp(0.8rem,1.5vw,1.2rem); width:100%; max-width:1000px; }
+.cards-3 { grid-template-columns:repeat(3,1fr); }
+.cards-2 { grid-template-columns:repeat(2,1fr); }
+.cards-4 { grid-template-columns:repeat(2,1fr); }
+.card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(212,165,116,0.15);
+  border-radius:12px; padding:clamp(0.8rem,1.5vw,1.5rem);
+  text-align:left; transition:border-color 0.4s, box-shadow 0.4s;
+}
+.card:hover { border-color:var(--accent); box-shadow:0 0 20px var(--accent-glow); }
+.card h3 { margin-bottom:0.4rem; font-size:clamp(0.95rem,1.8vw,1.3rem); }
+.card p { font-size:clamp(0.75rem,1.3vw,0.95rem); line-height:1.5; }
+
+/* Columns */
+.columns { display:grid; grid-template-columns:1fr 1fr; gap:clamp(1rem,2vw,2rem); width:100%; max-width:1000px; text-align:left; }
+.column h3 { margin-bottom:0.6rem; }
+.column li { font-size:clamp(0.75rem,1.3vw,0.95rem); margin-bottom:0.4rem; list-style:none; padding-left:1.2em; position:relative; }
+.column li::before { content:'→'; position:absolute; left:0; color:var(--accent); }
+
+/* Tension bars */
+.tension { display:flex; align-items:center; gap:0.8rem; margin:0.4rem 0; font-size:clamp(0.8rem,1.4vw,1rem); }
+.tension-bar { flex:1; height:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; position:relative; }
+.tension-label { min-width:clamp(80px,10vw,140px); text-align:right; color:var(--text-secondary); }
+.tension-label-r { min-width:clamp(80px,10vw,140px); text-align:left; color:var(--text-secondary); }
+
+/* Timeline */
+.timeline { display:flex; flex-direction:column; gap:0.3rem; width:100%; max-width:800px; }
+.tl-item { display:flex; align-items:center; gap:clamp(0.5rem,1vw,1rem); font-size:clamp(0.75rem,1.3vw,1rem); }
+.tl-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+.tl-turn { color:var(--accent); font-weight:600; min-width:clamp(50px,6vw,80px); font-family:var(--font-display); font-size:clamp(0.85rem,1.5vw,1.1rem); }
+.tl-phase { color:var(--text-primary); font-weight:500; }
+.tl-age { color:var(--text-secondary); font-size:clamp(0.7rem,1.1vw,0.85rem); }
+
+/* Items list */
+.items { text-align:left; max-width:800px; width:100%; }
+.item { margin-bottom:clamp(0.5rem,1vw,0.8rem); }
+.item strong { color:var(--accent); font-family:var(--font-display); font-size:clamp(0.9rem,1.6vw,1.15rem); }
+.item span { color:var(--text-secondary); font-size:clamp(0.8rem,1.3vw,1rem); }
+
+/* Dim icons */
+.dim-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(0.6rem,1.2vw,1rem); max-width:700px; width:100%; }
+.dim-item { display:flex; align-items:center; gap:0.8rem; padding:clamp(0.5rem,1vw,0.8rem); background:rgba(255,255,255,0.03); border-radius:8px; border:1px solid rgba(212,165,116,0.1); }
+.dim-char { font-family:var(--font-display); font-size:clamp(1.5rem,3vw,2.5rem); color:var(--accent); font-weight:700; }
+.dim-text h3 { font-size:clamp(0.85rem,1.4vw,1.1rem); margin-bottom:0.15rem; }
+.dim-text p { font-size:clamp(0.7rem,1.1vw,0.85rem); }
+
+/* Gradient BG */
+.gradient-bg {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(212,165,116,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124,152,133,0.06) 0%, transparent 50%),
+    var(--bg-primary);
+}
+.gradient-bg-2 {
+  background:
+    radial-gradient(ellipse at 70% 70%, rgba(212,165,116,0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 30% 30%, rgba(100,120,180,0.06) 0%, transparent 40%),
+    var(--bg-primary);
+}
+
+/* Animations */
+.reveal { opacity:0; transform:translateY(25px); transition:opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo); }
+.visible .reveal { opacity:1; transform:translateY(0); }
+.delay-1 { transition-delay:0.1s; }
+.delay-2 { transition-delay:0.2s; }
+.delay-3 { transition-delay:0.3s; }
+.delay-4 { transition-delay:0.4s; }
+.delay-5 { transition-delay:0.5s; }
+.delay-6 { transition-delay:0.6s; }
+.delay-7 { transition-delay:0.7s; }
+
+/* Progress bar */
+#progress { position:fixed; top:0; left:0; height:2px; background:var(--accent); z-index:100; transition:width 0.3s; width:0%; }
+
+/* Nav dots */
+.nav-dots { position:fixed; right:clamp(8px,1.5vw,20px); top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:8px; }
+.nav-dot { width:8px; height:8px; border-radius:50%; background:rgba(240,230,211,0.2); cursor:pointer; transition:all 0.3s; border:none; padding:0; }
+.nav-dot.active { background:var(--accent); box-shadow:0 0 8px var(--accent-glow); }
+
+/* Responsive */
+@media (max-width:768px) {
+  .cards-3, .cards-4 { grid-template-columns:1fr; }
+  .cards-2 { grid-template-columns:1fr; }
+  .columns { grid-template-columns:1fr; }
+  .dim-grid { grid-template-columns:1fr; }
+}
+@media (max-height:600px) {
+  .nav-dots { display:none; }
+  h2 { margin-bottom:0.5rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .reveal { transition-duration:0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- Slide 1: Title -->
+<section class="slide gradient-bg">
+  <div class="slide-content">
+    <h1 class="reveal" style="margin-bottom:0.5em;">如果「身为女性地活着」<br>是一场游戏</h1>
+    <p class="subtitle reveal delay-2">Living Life as a Woman: The Game</p>
+    <div style="margin-top:2rem;">
+      <p class="meta reveal delay-3">Amber &amp; Claude · Game Design Document</p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 2: What Kind of Game -->
+<section class="slide gradient-bg-2">
+  <div class="slide-content">
+    <h2 class="reveal">What Kind of Game Is It?</h2>
+    <p class="reveal delay-1" style="font-size:clamp(1rem,2vw,1.4rem);color:var(--accent);margin-bottom:1rem;font-family:var(--font-display);">Narrative RPG + Ecosystem Simulation</p>
+    <p class="reveal delay-2" style="max-width:700px;margin-bottom:1.5rem;">The world isn't open because you can go anywhere — it's open because <strong style="color:var(--text-primary)">the same map means different things</strong> depending on who you are.</p>
+    <p class="reveal delay-3 meta" style="margin-bottom:1.5rem;">Disco Elysium · Dwarf Fortress · Civilization · Tarot / I Ching</p>
+    <div class="quote reveal delay-4">"Perception is reality, but reality is also real."</div>
+  </div>
+</section>
+
+<!-- Slide 3: Worldview -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">Worldview / Game Philosophy</h2>
+    <div class="cards cards-3 reveal delay-1" style="margin-bottom:1rem;">
+      <div class="card"><p style="color:var(--accent);font-weight:500;">01</p><p>Structures exist and matter — society, class, culture are real forces</p></div>
+      <div class="card"><p style="color:var(--accent);font-weight:500;">02</p><p>Agency exists within constraints — you can't escape the board, but you can play it differently</p></div>
+      <div class="card"><p style="color:var(--accent);font-weight:500;">03</p><p>Internal life is primary data — how you feel matters as much as the outcome</p></div>
+    </div>
+    <div class="cards cards-2 reveal delay-3" style="max-width:660px;">
+      <div class="card"><p style="color:var(--accent);font-weight:500;">04</p><p>Nothing is purely individual — your moves affect others invisibly</p></div>
+      <div class="card"><p style="color:var(--accent);font-weight:500;">05</p><p>Time is nonlinear — one event at 14 reshapes meaning at 40</p></div>
+    </div>
+    <div class="quote reveal delay-5" style="margin-top:1.2rem;font-size:clamp(0.85rem,1.5vw,1.1rem);">"The game doesn't moralize. It observes. It reflects."</div>
+  </div>
+</section>
+
+<!-- Slide 4: Player Categories -->
+<section class="slide gradient-bg">
+  <div class="slide-content">
+    <h2 class="reveal">Player Categories</h2>
+    <p class="reveal delay-1" style="margin-bottom:1.5rem;max-width:600px;">Players sorted by three founding tensions — answered through scenario, not form. 8 base archetypes emerge.</p>
+    <div style="max-width:600px;width:100%;">
+      <div class="tension reveal delay-2"><span class="tension-label">Adaptor</span><div class="tension-bar"></div><span class="tension-label-r">Challenger</span></div>
+      <div class="tension reveal delay-3"><span class="tension-label">Relational Capital</span><div class="tension-bar"></div><span class="tension-label-r">Individual Competence</span></div>
+      <div class="tension reveal delay-4"><span class="tension-label">Embodied</span><div class="tension-bar"></div><span class="tension-label-r">Transcendent</span></div>
+    </div>
+    <p class="reveal delay-5 meta" style="margin-top:1.5rem;">Context: Geographic zone · Era · Class of origin · Body conditions</p>
+    <p class="reveal delay-6" style="color:var(--accent);font-style:italic;margin-top:0.5rem;font-size:clamp(0.8rem,1.3vw,1rem);">Who you start as is not who you remain.</p>
+  </div>
+</section>
+
+<!-- Slide 5: 7 Turns Overview -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">7 Major Turns</h2>
+    <div class="timeline">
+      <div class="tl-item reveal delay-1"><div class="tl-dot"></div><span class="tl-turn">Turn 1</span><span class="tl-phase">Girlhood</span><span class="tl-age">(0–12)</span></div>
+      <div class="tl-item reveal delay-2"><div class="tl-dot"></div><span class="tl-turn">Turn 2</span><span class="tl-phase">The Threshold</span><span class="tl-age">(12–18)</span></div>
+      <div class="tl-item reveal delay-3"><div class="tl-dot"></div><span class="tl-turn">Turn 3</span><span class="tl-phase">First World</span><span class="tl-age">(18–28)</span></div>
+      <div class="tl-item reveal delay-4"><div class="tl-dot"></div><span class="tl-turn">Turn 4</span><span class="tl-phase">The Contraction</span><span class="tl-age">(28–38)</span></div>
+      <div class="tl-item reveal delay-5"><div class="tl-dot"></div><span class="tl-turn">Turn 5</span><span class="tl-phase">Midgame Reckoning</span><span class="tl-age">(38–50)</span></div>
+      <div class="tl-item reveal delay-6"><div class="tl-dot"></div><span class="tl-turn">Turn 6</span><span class="tl-phase">Second Wind</span><span class="tl-age">(50–65)</span></div>
+      <div class="tl-item reveal delay-7"><div class="tl-dot"></div><span class="tl-turn">Turn 7</span><span class="tl-phase">Legacy Turn</span><span class="tl-age">(65+)</span></div>
+    </div>
+    <p class="reveal delay-7 meta" style="margin-top:1rem;">Between every turn: a Threshold Event — an unexpected card that can't be planned for.</p>
+  </div>
+</section>
+
+<!-- Slide 6: Early Game -->
+<section class="slide gradient-bg-2">
+  <div class="slide-content">
+    <h2 class="reveal">Early Game</h2>
+    <div class="cards cards-3">
+      <div class="card reveal delay-1">
+        <h3>Girlhood <span style="color:var(--text-secondary);font-weight:400;">(0–12)</span></h3>
+        <p>You receive. Passive absorption — family scripts, body messages, early relational data. Limited agency, maximum impressionability.</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>The Threshold <span style="color:var(--text-secondary);font-weight:400;">(12–18)</span></h3>
+        <p>First major divergence. Social systems fully activate. Sexuality, ambition, belonging — first real choices with lasting weight.</p>
+      </div>
+      <div class="card reveal delay-3">
+        <h3>First World <span style="color:var(--text-secondary);font-weight:400;">(18–28)</span></h3>
+        <p>Peak expansion. Maximum optionality, minimum wisdom. The game feels most like an open world here. Risk/reward ratios are extreme.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 7: Mid Game -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">Mid Game</h2>
+    <div class="cards cards-2" style="max-width:800px;">
+      <div class="card reveal delay-1">
+        <h3>The Contraction <span style="color:var(--text-secondary);font-weight:400;">(28–38)</span></h3>
+        <p>Doors begin closing. But closing a door isn't losing — sometimes it's building a room. Trade-off intelligence becomes core skill.</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>Midgame Reckoning <span style="color:var(--text-secondary);font-weight:400;">(38–50)</span></h3>
+        <p>Inventory audit. What did I accumulate? What did I give away? The game's most emotionally complex phase.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8: Late Game -->
+<section class="slide gradient-bg">
+  <div class="slide-content">
+    <h2 class="reveal">Late Game</h2>
+    <div class="cards cards-2" style="max-width:800px;">
+      <div class="card reveal delay-1">
+        <h3>Second Wind or Unraveling <span style="color:var(--text-secondary);font-weight:400;">(50–65)</span></h3>
+        <p>Bifurcation point. Players who built internal resources experience unexpected expansion. Others face the cost of deferred choices.</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>Legacy Turn <span style="color:var(--text-secondary);font-weight:400;">(65+)</span></h3>
+        <p>The game shifts to what you generate in others. Your primary resource becomes influence, story, and transmission.</p>
+      </div>
+    </div>
+    <p class="reveal delay-3 meta" style="margin-top:1.5rem;">Between every turn: a Threshold Event — an unexpected card that can't be planned for.</p>
+  </div>
+</section>
+
+<!-- Slide 9: Winning Scenarios 1 -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">Winning Scenarios</h2>
+    <p class="reveal delay-1" style="margin-bottom:1.2rem;color:var(--accent);font-style:italic;">There is no single winning scenario.</p>
+    <div class="items">
+      <div class="item reveal delay-2"><strong>1. The Integrated Life</strong><br><span>Your internal self and external life are legible to each other. You recognize yourself.</span></div>
+      <div class="item reveal delay-3"><strong>2. The Generous Fire</strong><br><span>You burned intensely and gave heat to many. You may be depleted, but the world is measurably warmer.</span></div>
+      <div class="item reveal delay-4"><strong>3. The Quiet Fortress</strong><br><span>You protected something precious — a child, a craft, a community, a self — against enormous pressure.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 10: Winning Scenarios 2 -->
+<section class="slide gradient-bg-2">
+  <div class="slide-content">
+    <div class="items">
+      <div class="item reveal"><strong>4. The Late Bloomer</strong><br><span>You arrive at something essential in Turn 6 or 7 that others found in Turn 2. The timing was right for you.</span></div>
+      <div class="item reveal delay-1"><strong>5. The Honest Failure</strong><br><span>You didn't reach success, but you understood why, made peace, and transmitted that knowledge. This counts.</span></div>
+      <div class="item reveal delay-2"><strong>6. The Still-Playing</strong><br><span>Endgame arrives and you are still genuinely curious. Nothing is closed. Perhaps the rarest win.</span></div>
+    </div>
+    <div class="quote reveal delay-4" style="margin-top:1.5rem;">"Dying having never understood your own life is the only true loss state. And even then, the game asks: was it the player, or the conditions?"</div>
+  </div>
+</section>
+
+<!-- Slide 11: Winning Conditions -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">Winning Conditions</h2>
+    <p class="reveal delay-1" style="margin-bottom:1.2rem;font-style:italic;color:var(--text-secondary);">Not a checklist — a resonance test.</p>
+    <div class="dim-grid">
+      <div class="dim-item reveal delay-2"><span class="dim-char">志</span><div class="dim-text"><h3>Coherence</h3><p>Do your choices feel like yours, even under constraint?</p></div></div>
+      <div class="dim-item reveal delay-3"><span class="dim-char">幽</span><div class="dim-text"><h3>Depth</h3><p>Have you let things actually land?</p></div></div>
+      <div class="dim-item reveal delay-4"><span class="dim-char">韧</span><div class="dim-text"><h3>Regeneration</h3><p>Are you capable of being surprised?</p></div></div>
+      <div class="dim-item reveal delay-5"><span class="dim-char">渡</span><div class="dim-text"><h3>Transmission</h3><p>Has something of value passed through you?</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 12: Cheats & Shortcuts -->
+<section class="slide gradient-bg">
+  <div class="slide-content">
+    <h2 class="reveal">Cheats &amp; Shortcuts</h2>
+    <div class="columns reveal delay-1">
+      <div class="column">
+        <h3 style="color:var(--text-secondary);">Cheats <span style="font-weight:300;font-size:0.8em;">(work, with cost)</span></h3>
+        <ul>
+          <li><strong style="color:var(--text-primary);">Marrying up</strong> — trades internal coherence; penalty surfaces in Turn 5</li>
+          <li><strong style="color:var(--text-primary);">Suppressing the body</strong> — temporarily increases output; the bill arrives, always</li>
+          <li><strong style="color:var(--text-primary);">Performing a character</strong> — effective short-term; identity debt accumulates</li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3 style="color:var(--accent2);">Shortcuts <span style="font-weight:300;font-size:0.8em;">(genuine, rare)</span></h3>
+        <ul>
+          <li><strong style="color:var(--text-primary);">A mentor who sees you clearly</strong> — compresses 10 years into 2</li>
+          <li><strong style="color:var(--text-primary);">The right crisis at the right time</strong> — suffering with support = fastest growth</li>
+          <li><strong style="color:var(--text-primary);">Finding your medium early</strong> — everything compounds from Turn 2–3</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 13: Surprise Packages -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">Surprise Packages</h2>
+    <p class="reveal delay-1" style="margin-bottom:1rem;color:var(--text-secondary);font-style:italic;">Random drops, can't be earned.</p>
+    <div class="items" style="max-width:650px;">
+      <div class="item reveal delay-2"><strong>The unexpected friendship</strong> — <span>changes your resource map entirely</span></div>
+      <div class="item reveal delay-3"><strong>The body that heals</strong> — <span>resilience beyond model</span></div>
+      <div class="item reveal delay-4"><strong>The stranger who tells you the truth</strong> — <span>a single sentence reorganizes years</span></div>
+      <div class="item reveal delay-5"><strong>The second chance</strong> — <span>a path reopens; rarer after Turn 4</span></div>
+      <div class="item reveal delay-6"><strong>Being witnessed</strong> — <span>someone sees you fully, at the right moment. Exceedingly rare.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 14: Hidden Mechanics -->
+<section class="slide gradient-bg-2">
+  <div class="slide-content">
+    <h2 class="reveal">Hidden Mechanics</h2>
+    <div class="cards cards-2" style="max-width:800px;">
+      <div class="card reveal delay-1">
+        <h3>The Mirror System</h3>
+        <p>Your choices create ripples for other women in your network. The game tracks this, but doesn't show the score until very late. How do others experience your turn?</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>The Unchosen Lives</h3>
+        <p>Every branching decision generates a ghost — a parallel path not taken. Visible occasionally in Turn 5. They're not there to haunt you. They're data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 15: Body & Grief -->
+<section class="slide">
+  <div class="slide-content">
+    <h2 class="reveal">The Body &amp; Grief</h2>
+    <div class="cards cards-2" style="max-width:800px;">
+      <div class="card reveal delay-1">
+        <h3>Grief as Mechanic</h3>
+        <p>Not penalty — a processing phase. A necessary metabolism. Skipping it stores unprocessed material as weight that accumulates. Those who grieve well, move well.</p>
+      </div>
+      <div class="card reveal delay-2">
+        <h3>The Body as Co-Player</h3>
+        <p>Not your avatar — an NPC with its own agenda you're in constant negotiation with. It gives information. It overrides you. Learning to read it is one of the highest-skill activities.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 16: Closing -->
+<section class="slide gradient-bg">
+  <div class="slide-content">
+    <h2 class="reveal">The Game Knows You're Playing</h2>
+    <div class="quote reveal delay-2" style="margin-bottom:1.5rem;">"The more self-aware your character becomes about the game's structures, the more agency she has — and the more she can see the arbitrariness of the rules."</div>
+    <p class="reveal delay-4" style="max-width:700px;font-family:var(--font-display);font-size:clamp(0.95rem,2vw,1.3rem);color:var(--text-primary);line-height:1.8;">This game doesn't end with a score.<br>It ends with a story you can tell about yourself —<br>one that has enough truth in it that<br>you'd recognize it as yours, even in the dark.</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  // Nav dots
+  const dotsEl = document.getElementById('navDots');
+  slides.forEach((_,i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot'; d.setAttribute('aria-label','Slide '+(i+1));
+    d.onclick = () => slides[i].scrollIntoView({behavior:'smooth'});
+    dotsEl.appendChild(d);
+  });
+  const dots = dotsEl.querySelectorAll('.nav-dot');
+
+  // Intersection Observer for reveals & active dot
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        const idx = Array.from(slides).indexOf(e.target);
+        dots.forEach((d,i) => d.classList.toggle('active', i===idx));
+        document.getElementById('progress').style.width = ((idx+1)/total*100)+'%';
+      }
+    });
+  }, {threshold:0.4});
+  slides.forEach(s => obs.observe(s));
+
+  // Keyboard nav
+  let current = 0;
+  function goTo(i){ i=Math.max(0,Math.min(total-1,i)); slides[i].scrollIntoView({behavior:'smooth'}); current=i; }
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();goTo(current+1);}
+    if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();goTo(current-1);}
+    if(e.key==='ArrowRight'){e.preventDefault();goTo(current+1);}
+    if(e.key==='ArrowLeft'){e.preventDefault();goTo(current-1);}
+  });
+
+  // Track current from scroll
+  const scrollObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) current = Array.from(slides).indexOf(e.target); });
+  }, {threshold:0.5});
+  slides.forEach(s => scrollObs.observe(s));
+
+  // Touch
+  let ty=0;
+  document.addEventListener('touchstart', e => { ty=e.touches[0].clientY; });
+  document.addEventListener('touchend', e => { const dy=ty-e.changedTouches[0].clientY; if(Math.abs(dy)>50){dy>0?goTo(current+1):goTo(current-1);} });
+})();
+</script>
+</body>
+</html>
