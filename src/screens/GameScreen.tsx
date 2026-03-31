@@ -97,7 +97,7 @@ export default function GameScreen() {
                 {state.currentThreshold.category} · {t.thresholdLabel}
               </span>
             )}
-            <h2 className="text-2xl font-light tracking-wide animate-fade-in">{scene.title}</h2>
+            <h2 className="text-3xl font-light tracking-wide animate-fade-in">{scene.title}</h2>
           </div>
 
           {state.phase === 'transition' ? (

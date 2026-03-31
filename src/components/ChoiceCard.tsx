@@ -22,7 +22,7 @@ export default function ChoiceCard({ text, index, onSelect, disabled }: ChoiceCa
         <span className="ui-text text-accent/40 text-xs mt-1 group-hover:text-accent/70 transition-colors tracking-wider">
           {UI_TEXT.gameScreen.choiceLabels[index]}
         </span>
-        <span className="text-text-primary/90 text-[15px] leading-[1.7] group-hover:text-text-primary transition-colors">
+        <span className="text-text-primary/80 text-[14px] leading-[1.7] group-hover:text-text-primary transition-colors">
           {text}
         </span>
       </div>

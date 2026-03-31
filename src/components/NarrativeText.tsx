@@ -10,7 +10,7 @@ export default function NarrativeText({ text, className = '' }: NarrativeTextPro
       {paragraphs.map((p, i) => (
         <p
           key={i}
-          className="text-text-primary text-base leading-[1.8] animate-fade-in"
+          className="text-text-primary text-[17px] leading-[1.85] animate-fade-in"
           style={{ animationDelay: `${i * 0.12}s`, opacity: 0 }}
         >
           {p}
