@@ -20,15 +20,12 @@ export default function GameScreen() {
     dispatch({ type: 'ADVANCE_TURN' });
   }, [state.characterState, dispatch]);
 
-  // Shadow mode: auto-advance after 1.5s in transition (no "继续" button needed)
+  // Clean up auto-advance ref on unmount
   useEffect(() => {
-    if (isShadow && state.phase === 'transition') {
-      autoAdvanceRef.current = setTimeout(handleContinue, 1500);
-      return () => {
-        if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
-      };
-    }
-  }, [isShadow, state.phase, handleContinue]);
+    return () => {
+      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
+    };
+  }, []);
 
   const handleChoice = useCallback(
     (index: number) => {
@@ -106,18 +103,15 @@ export default function GameScreen() {
           {state.phase === 'transition' ? (
             <div className="space-y-8">
               <NarrativeText text={state.aiNarration} />
-              {/* Shadow mode: no continue button, auto-advances */}
-              {!isShadow && (
-                <button
-                  onClick={handleContinue}
-                  className="px-6 py-2 border border-accent/30 rounded-lg text-accent text-sm
-                             hover:bg-accent/10 transition-all duration-300 cursor-pointer
-                             animate-fade-in"
-                  style={{ animationDelay: '0.8s', opacity: 0 }}
-                >
-                  {t.continueButton}
-                </button>
-              )}
+              <button
+                onClick={handleContinue}
+                className="ui-text px-6 py-2 border border-accent/20 rounded-lg text-accent text-sm
+                           hover:bg-accent/10 transition-all duration-300 cursor-pointer
+                           animate-fade-in tracking-wide"
+                style={{ animationDelay: '0.6s', opacity: 0 }}
+              >
+                {t.continueButton}
+              </button>
             </div>
           ) : (
             <div className="space-y-8">
