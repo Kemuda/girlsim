@@ -40,7 +40,7 @@ export default function StartScreen() {
         <div>
           <button
             onClick={() => dispatch({ type: 'START_GAME', mode: 'full' })}
-            className="ui-text text-text-secondary/30 text-xs hover:text-text-secondary/60
+            className="ui-text text-text-secondary/30 text-sm hover:text-text-secondary/60
                        transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4 decoration-text-secondary/15 hover:decoration-text-secondary/30"
           >
             {t.fullButton}
