@@ -5,7 +5,7 @@
 export const UI_TEXT = {
   // ── Start screen ──
   startScreen: {
-    title: 'Her Life',
+    title: 'This Game We Play',
     subtitle: 'GirlSim',
     intro: [
       'This is a story about choices.',
