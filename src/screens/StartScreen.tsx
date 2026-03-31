@@ -16,35 +16,35 @@ export default function StartScreen() {
           </p>
         </div>
 
-        {/* Shadow line — primary */}
+        {/* BaZi mode — primary */}
         <div className="space-y-6">
           <div className="space-y-2">
             <p className="text-text-primary text-lg leading-relaxed italic">
-              {t.shadowTitle}
+              命是抽的。运是给的。选择是你的。
             </p>
             <p className="ui-text text-text-secondary/60 text-xs tracking-wide">
-              {t.shadowDesc}
+              八字驱动 · 七个人生阶段 · 无限可能
             </p>
           </div>
           <button
-            onClick={() => dispatch({ type: 'START_GAME', mode: 'shadow' })}
+            onClick={() => dispatch({ type: 'START_GAME', mode: 'full' })}
             className="ui-text px-10 py-3 border border-accent/30 rounded-lg text-accent
                        hover:bg-accent/10 transition-all duration-300 cursor-pointer
                        tracking-[0.08em] text-sm"
           >
-            {t.shadowButton}
+            抽命
           </button>
         </div>
       </div>
 
-      {/* Full life — bottom right corner */}
+      {/* Shadow mode — bottom right corner */}
       <button
-        onClick={() => dispatch({ type: 'START_GAME', mode: 'full' })}
+        onClick={() => dispatch({ type: 'START_GAME', mode: 'shadow' })}
         className="ui-text fixed bottom-6 right-6 text-text-secondary/30 text-sm hover:text-text-secondary/60
                    transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4
                    decoration-text-secondary/15 hover:decoration-text-secondary/30"
       >
-        {t.fullButton}
+        {t.shadowButton} — {t.shadowDesc}
       </button>
     </div>
   );

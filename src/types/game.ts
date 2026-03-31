@@ -40,7 +40,7 @@ export interface HistoryEntry {
   stateAfter: CharacterState;
 }
 
-export type GamePhase = 'start' | 'playing' | 'threshold' | 'transition' | 'ending';
+export type GamePhase = 'start' | 'chart-reveal' | 'playing' | 'threshold' | 'transition' | 'ending';
 
 export type GameMode = 'full' | 'shadow';
 

@@ -6,6 +6,7 @@ import ShareCard from '../components/ShareCard';
 import DimensionCurve from '../components/DimensionCurve';
 import type { DimensionKey } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
+import { WUXING_COLORS, SHISHEN_INFO, PILLAR_NAMES } from '../engine/bazi';
 
 export default function EndScreen() {
   const { state, dispatch } = useGame();
@@ -96,6 +97,97 @@ export default function EndScreen() {
             </div>
           </div>
         </div>
+
+        {/* BaZi Review */}
+        {state.baziLife && (
+          <div className="bg-bg-card rounded-lg p-4 lg:p-6 space-y-4">
+            <h3 className="text-xs text-text-secondary uppercase tracking-wider ui-text">
+              命盘回顾
+            </h3>
+
+            {/* Chart */}
+            <div className="flex justify-center gap-4">
+              {(['year', 'month', 'day', 'hour'] as const).map(pos => {
+                const pillar = state.baziLife!.chart[pos];
+                return (
+                  <div key={pos} className="text-center">
+                    <span className="text-[10px] text-text-secondary/40 ui-text block mb-1">
+                      {PILLAR_NAMES[pos]}
+                    </span>
+                    <span
+                      className="text-lg block"
+                      style={{ color: WUXING_COLORS[pillar.stem.wuxing as keyof typeof WUXING_COLORS] }}
+                    >
+                      {pillar.stem.name}
+                    </span>
+                    <span
+                      className="text-lg block"
+                      style={{ color: WUXING_COLORS[pillar.branch.wuxing as keyof typeof WUXING_COLORS] }}
+                    >
+                      {pillar.branch.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Key stats */}
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span className="text-text-secondary/50 text-xs ui-text">日主</span>
+                <p className="text-text-primary">
+                  {state.baziLife.dayMaster.name}{state.baziLife.dayMaster.wuxing}
+                  <span className="text-text-secondary/50 ml-1">· {state.baziLife.strength.level}</span>
+                </p>
+              </div>
+              <div>
+                <span className="text-text-secondary/50 text-xs ui-text">人生主题</span>
+                <p className="text-text-primary">
+                  {state.baziLife.monthTheme.primaryShiShen}
+                  <span className="text-text-secondary/50 ml-1">
+                    · {SHISHEN_INFO[state.baziLife.monthTheme.primaryShiShen].description}
+                  </span>
+                </p>
+              </div>
+              <div>
+                <span className="text-text-secondary/50 text-xs ui-text">偏枯</span>
+                <p className="text-text-primary text-xs">{state.baziLife.imbalance.obsession}</p>
+              </div>
+              <div>
+                <span className="text-text-secondary/50 text-xs ui-text">透出</span>
+                <p className="text-text-primary text-xs">
+                  {state.baziLife.penetrations.length > 0
+                    ? state.baziLife.penetrations.map(p => p.shishen).filter((v, i, a) => a.indexOf(v) === i).join('、')
+                    : '无透出'}
+                </p>
+              </div>
+            </div>
+
+            {/* Luck cycles */}
+            <div>
+              <span className="text-text-secondary/50 text-xs ui-text block mb-2">大运轨迹</span>
+              <div className="flex gap-1">
+                {state.baziLife.luckCycles.map(dy => {
+                  const color = dy.energyColor === 'support' ? '#4CAF50'
+                    : dy.energyColor === 'pressure' ? '#E53935'
+                    : dy.energyColor === 'drain' ? '#D4A017'
+                    : dy.energyColor === 'resource' ? '#378ADD'
+                    : '#666';
+                  const isCurrent = dy.index <= state.currentTurnIndex;
+                  return (
+                    <div key={dy.index} className="flex-1 text-center">
+                      <div
+                        className="h-1.5 rounded-full mb-1"
+                        style={{ backgroundColor: color, opacity: isCurrent ? 0.8 : 0.2 }}
+                      />
+                      <span className="text-[9px] text-text-secondary/40 ui-text">{dy.ageRange}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="text-center pt-4 space-y-3">

@@ -9,6 +9,8 @@ import type {
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
 import { SCENES, THRESHOLD_CARDS, SHADOW_SCENES } from '../content';
+import type { BaZiLife, ShiShen } from '../engine/bazi';
+import { generateLife } from '../engine/bazi';
 
 interface GameState {
   phase: GamePhase;
@@ -23,10 +25,14 @@ interface GameState {
   isLoading: boolean;
   thresholdsUsed: string[];
   dimensionHistory: CharacterState[];
+  // BaZi
+  baziLife: BaZiLife | null;
+  shishenChoices: ShiShen[];  // track 十神 direction of each choice
 }
 
 type GameAction =
   | { type: 'START_GAME'; mode?: GameMode }
+  | { type: 'BEGIN_PLAY' }
   | { type: 'SET_SCENE'; scene: Scene }
   | { type: 'SET_THRESHOLD'; card: ThresholdCard }
   | { type: 'MAKE_CHOICE'; choiceIndex: number; aiResponse: string }
@@ -49,6 +55,8 @@ const initialGameState: GameState = {
   isLoading: false,
   thresholdsUsed: [],
   dimensionHistory: [{ ...INITIAL_STATE }],
+  baziLife: null,
+  shishenChoices: [],
 };
 
 function getScenes(mode: GameMode): Scene[] {
@@ -68,11 +76,36 @@ function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME': {
       const mode = action.mode ?? 'full';
-      const scenes = getScenes(mode);
-      const firstScene = scenes.find((s) => s.turnIndex === 0);
+      const life = generateLife();
+      if (mode === 'shadow') {
+        // Shadow mode: skip chart reveal, go straight to playing
+        const scenes = getScenes(mode);
+        const firstScene = scenes.find((s) => s.turnIndex === 0);
+        return {
+          ...initialGameState,
+          mode,
+          phase: 'playing',
+          currentScene: firstScene || null,
+          currentSceneIndex: 0,
+          dimensionHistory: [{ ...INITIAL_STATE }],
+          baziLife: life,
+          shishenChoices: [],
+        };
+      }
       return {
         ...initialGameState,
         mode,
+        phase: 'chart-reveal',
+        baziLife: life,
+        shishenChoices: [],
+      };
+    }
+
+    case 'BEGIN_PLAY': {
+      const scenes = getScenes(state.mode);
+      const firstScene = scenes.find((s) => s.turnIndex === 0);
+      return {
+        ...state,
         phase: 'playing',
         currentScene: firstScene || null,
         currentSceneIndex: 0,

@@ -1,5 +1,6 @@
 import { useGame } from './context/GameContext';
 import StartScreen from './screens/StartScreen';
+import ChartRevealScreen from './screens/ChartRevealScreen';
 import GameScreen from './screens/GameScreen';
 import EndScreen from './screens/EndScreen';
 
@@ -9,6 +10,8 @@ function App() {
   switch (state.phase) {
     case 'start':
       return <StartScreen />;
+    case 'chart-reveal':
+      return <ChartRevealScreen />;
     case 'playing':
     case 'threshold':
     case 'transition':
