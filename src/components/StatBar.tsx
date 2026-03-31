@@ -19,25 +19,29 @@ export default function StatBar({ dimension, value, prevValue }: StatBarProps) {
         className="flex items-center gap-2 text-sm cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
-        <span className="w-5 text-center opacity-70">{config.icon}</span>
-        <span className="w-6 text-text-secondary text-xs">{config.label}</span>
-        <div className="flex-1 h-2 bg-bg-hover rounded-full overflow-hidden">
+        <span className="shrink-0 w-4 text-center opacity-60 text-xs">{config.icon}</span>
+        <span className="ui-text shrink-0 w-[4.5rem] text-text-secondary text-[11px] tracking-wide truncate">
+          {config.label}
+        </span>
+        <div className="flex-1 min-w-0 h-1.5 bg-bg-hover rounded-full overflow-hidden">
           <div
             className={`h-full ${config.color} rounded-full transition-all duration-700 ease-out`}
             style={{ width: `${value}%` }}
           />
         </div>
-        <span className="w-8 text-right text-xs tabular-nums">{value}</span>
+        <span className="ui-text shrink-0 w-7 text-right text-[11px] tabular-nums text-text-secondary/70">
+          {value}
+        </span>
         {delta !== 0 && (
           <span
-            className={`w-8 text-xs font-mono ${delta > 0 ? 'text-green-400' : 'text-red-400'}`}
+            className={`ui-text shrink-0 w-7 text-[11px] tabular-nums ${delta > 0 ? 'text-green-400/80' : 'text-red-400/80'}`}
           >
             {delta > 0 ? '+' : ''}{delta}
           </span>
         )}
       </div>
       {expanded && (
-        <p className="text-xs text-text-secondary/60 ml-7 mt-1 animate-fade-in">
+        <p className="text-xs text-text-secondary/50 ml-6 pl-[4.5rem] mt-1 animate-fade-in leading-relaxed">
           {config.description}
         </p>
       )}
