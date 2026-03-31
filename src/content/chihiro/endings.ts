@@ -59,24 +59,27 @@ export function determineChihiroEnding(shishenChoices: ShiShen[]): ChihiroEnding
   }
 
   const shishen = (s: ShiShen) => counts[s] ?? 0;
-  const THRESHOLD = Math.ceil(shishenChoices.length * 0.35); // ~35% = dominant
+  // Low fixed threshold: 3 choices in same direction = dominant path
+  const STRONG = 4;
+  const LEAN = 2;
 
-  // 食神/伤官 dominant → 千寻 (expression, care, creation)
-  if (shishen('食神') + shishen('伤官') >= THRESHOLD) {
-    return CHIHIRO_ENDINGS.find(e => e.id === 'chihiro')!;
+  // Strong dominance check (clear path)
+  if (shishen('食神') + shishen('伤官') >= STRONG) return CHIHIRO_ENDINGS.find(e => e.id === 'chihiro')!;
+  if (shishen('七杀') >= STRONG) return CHIHIRO_ENDINGS.find(e => e.id === 'warrior')!;
+  if (shishen('正印') + shishen('正官') >= STRONG) return CHIHIRO_ENDINGS.find(e => e.id === 'good-girl')!;
+  if (shishen('偏印') >= STRONG - 1) return CHIHIRO_ENDINGS.find(e => e.id === 'stayed')!;
+
+  // Lean: find top-scoring cluster
+  const clusters = [
+    { id: 'chihiro',    score: shishen('食神') + shishen('伤官') },
+    { id: 'warrior',    score: shishen('七杀') },
+    { id: 'good-girl',  score: shishen('正印') + shishen('正官') },
+    { id: 'stayed',     score: shishen('偏印') },
+  ].sort((a, b) => b.score - a.score);
+
+  if (clusters[0].score >= LEAN) {
+    return CHIHIRO_ENDINGS.find(e => e.id === clusters[0].id)!;
   }
-  // 七杀/比肩 dominant → 战士 (fighting, resistance)
-  if (shishen('七杀') + shishen('比肩') >= THRESHOLD) {
-    return CHIHIRO_ENDINGS.find(e => e.id === 'warrior')!;
-  }
-  // 正印/正官 dominant → 听话的孩子 (conformity, authority)
-  if (shishen('正印') + shishen('正官') >= THRESHOLD) {
-    return CHIHIRO_ENDINGS.find(e => e.id === 'good-girl')!;
-  }
-  // 偏印 dominant → 她留下了 (introspection, withdrawal)
-  if (shishen('偏印') >= THRESHOLD - 1) {
-    return CHIHIRO_ENDINGS.find(e => e.id === 'stayed')!;
-  }
-  // No dominant → 普通人
+
   return CHIHIRO_ENDINGS.find(e => e.id === 'ordinary')!;
 }

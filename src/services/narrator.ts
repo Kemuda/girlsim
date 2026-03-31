@@ -2,6 +2,8 @@ import type { CharacterState, GameMode, HistoryEntry } from '../types/game';
 import {
   NARRATION_TEMPLATES,
   NARRATION_CONNECTORS,
+  ZH_NARRATION_TEMPLATES,
+  ZH_NARRATION_CONNECTORS,
   TURN_TRANSITIONS,
   SHADOW_HIGH_SUFFIX,
   REGENERATION_HIGH_SUFFIX,
@@ -32,6 +34,14 @@ export function generateNarration(
     const connector = pickRandom(SHADOW_CONNECTORS);
     const line = pickRandom(SHADOW_NARRATION);
     return `${connector}「${choiceText}」。\n\n${line}`;
+  }
+
+  if (mode === 'chihiro' || mode === 'full') {
+    const category = getHighestDimension(state);
+    const templates = ZH_NARRATION_TEMPLATES[category] || ZH_NARRATION_TEMPLATES.generic;
+    const base = pickRandom(templates);
+    const connector = pickRandom(ZH_NARRATION_CONNECTORS);
+    return `${connector}「${choiceText}」。\n\n${base}`;
   }
 
   const category = getHighestDimension(state);

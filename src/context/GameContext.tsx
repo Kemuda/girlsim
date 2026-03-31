@@ -218,7 +218,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
       // Lifespan mechanic: at Stage 3 entry, check for breaking point
       if (newTurn === 3 && currentTurn < 3 && state.mode !== 'shadow') {
-        if (state.characterState.Body < 20 && state.characterState.Regeneration < 20) {
+        if (state.characterState.Body + state.characterState.Regeneration < 50) {
           // Trigger breaking point threshold
           const breakingPoint: import('../types/game').ThresholdCard = {
             id: 'breaking-point',
@@ -243,8 +243,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         }
       }
 
-      // Skip threshold cards in shadow mode
-      if (state.mode !== 'shadow' && newTurn > currentTurn) {
+      // Only trigger random threshold cards in full mode
+      if (state.mode === 'full' && newTurn > currentTurn) {
         const thresholds = getThresholds(state.mode);
         const available = thresholds.filter(
           (t) => !state.thresholdsUsed.includes(t.id)

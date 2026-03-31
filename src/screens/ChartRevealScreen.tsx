@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import type { LifeNarrative } from '../engine/bazi';
+import { STAGE_NAMES_ZH } from '../types/game';
 
 type Phase = 'waiting' | 'draw-fate' | 'fate-revealed' | 'draw-luck' | 'luck-revealed' | 'ready';
 
@@ -135,7 +136,7 @@ export default function ChartRevealScreen() {
                   <Reveal key={i} delay={2400 + i * 700}>
                     <div className="flex gap-3 items-start">
                       <span className="text-text-secondary/30 text-xs ui-text whitespace-nowrap mt-1">
-                        {['童年', '青春', '初入社会', '而立', '中年', '知天命', '晚年'][i]}
+                        {STAGE_NAMES_ZH[i]}
                       </span>
                       <p className="text-text-secondary/60 text-sm leading-relaxed">
                         {intro}

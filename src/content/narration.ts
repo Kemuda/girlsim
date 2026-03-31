@@ -42,6 +42,46 @@ export const NARRATION_CONNECTORS: string[] = [
   'Something inside you said',
 ];
 
+// ── Chinese narration (used for chihiro + full BaZi modes) ──
+
+export const ZH_NARRATION_TEMPLATES: Record<string, string[]> = {
+  high_coherence: [
+    '你知道自己在走哪条路。这种清醒，有时候是礼物，有时候是负担。',
+    '方向感是你的武器。但路不是直的，你也知道。',
+  ],
+  high_depth: [
+    '你的内心比外面的世界更宽。安静的时候，你能听到别人听不见的声音。',
+    '你看得比别人深一点。那些看不见的东西，都在你这里留下了痕迹。',
+  ],
+  high_regeneration: [
+    '这件事改变了你，但没有压垮你。你有一种说不清的能力——倒下，再起来。',
+    '你不是没受过伤。你只是每次都找到了继续的理由。',
+  ],
+  high_transmission: [
+    '你影响的人，比你知道的多。有些话，你可能已经忘了，但说话的对象还记得。',
+    '你和别人之间的那条线，是你最重要的东西。',
+  ],
+  high_body: [
+    '你记得自己是有身体的人。这件事，没你想象的那么理所当然。',
+    '身体有它自己的智慧。你在学着听它说话。',
+  ],
+  high_shadow: [
+    '你压下去的东西没有消失。它们在某个地方安静地等着。',
+    '影子越来越长了。也许该转过身看一眼了。',
+  ],
+  generic: [
+    '日子在过。你在变，只是还没看清楚变成什么样子。',
+    '每一个选择都在悄悄塑造你。不是今天，是很多年以后。',
+    '没有什么是白经历的。哪怕你现在还不知道这件事有什么用。',
+  ],
+};
+
+export const ZH_NARRATION_CONNECTORS: string[] = [
+  '你选了',
+  '那一刻，你决定了',
+  '你心里有什么东西说',
+];
+
 /** Stage transition narration */
 export const TURN_TRANSITIONS: Record<string, string> = {
   'Girlhood→The Threshold':

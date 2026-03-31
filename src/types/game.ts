@@ -51,6 +51,8 @@ export interface TurnInfo {
   index: number;
 }
 
+export const STAGE_NAMES_ZH = ['童年', '青春', '初入社会', '而立', '中年', '知天命', '晚年'] as const;
+
 export const TURNS: TurnInfo[] = [
   { name: 'Girlhood', ageRange: '0–12', index: 0 },
   { name: 'The Threshold', ageRange: '12–18', index: 1 },
