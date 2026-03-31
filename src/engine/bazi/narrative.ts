@@ -117,6 +117,55 @@ const ENERGY_INTROS: Record<DaYunEnergy, string[]> = {
   ],
 };
 
+// --- Era description: what macro winds does this life move through ---
+
+function generateEraDesc(life: BaZiLife): string {
+  const cycles = life.luckCycles;
+  const energies = cycles.map(c => c.energyColor);
+
+  const count = (type: string) => energies.filter(e => e === type).length;
+  const pressureCount = count('pressure');
+  const supportCount = count('support');
+  const drainCount = count('drain');
+
+  // Find when pressure and support peaks hit
+  const firstPressure = energies.findIndex(e => e === 'pressure');
+  const firstSupport = energies.findIndex(e => e === 'support');
+
+  const lines: string[] = [];
+  lines.push('你无法选择时代的风往哪吹。');
+
+  // Describe the arc shape
+  if (pressureCount >= 3) {
+    if (firstPressure <= 2) {
+      lines.push('这一生，压力来得很早。很多同龄人都在这个大浪里——你不是特别倒霉，你只是在那个时代里。');
+    } else {
+      lines.push('年轻时还有喘息的空间。但中年之后，时代给你的压力会很具体，很难绕开。');
+    }
+  } else if (pressureCount === 0) {
+    lines.push('你这一生，很少遇到时代性的正面压迫。这不是没有困难，而是外部的大风向对你来说相对宽松。');
+  } else {
+    lines.push('这一生，压力不是没有，但也没有把你淹没。你有足够的空间找到自己的节奏。');
+  }
+
+  if (supportCount >= 3) {
+    if (firstSupport <= 2) {
+      lines.push('时代在你年轻的时候给过你托举——你也许没意识到，但那段时间的路比后来容易走。');
+    } else {
+      lines.push('中年之后，会有一种背后托着的力量出现。你不一定看得见，但你会感觉到路好走了一点。');
+    }
+  }
+
+  if (drainCount >= 3) {
+    lines.push('这一生，你会持续地往外给——给工作，给家庭，给时代的需要。你的资源会比别人消耗得快。');
+  }
+
+  // Closing: the wind is not about you
+  lines.push('这不是命运对你个人说的话。这是你活在那个时代里的大背景。');
+
+  return lines.join('\n\n');
+}
+
 // --- Public API ---
 
 export interface LifeNarrative {
@@ -132,7 +181,9 @@ export interface LifeNarrative {
   themeRecurring: string;
   /** What's missing in your life */
   obsessionDesc: string;
-  /** Intro text for each of the 7 life stages */
+  /** One paragraph: what era/zeitgeist this life moves through */
+  eraDesc: string;
+  /** Intro text for each of the 7 life stages (used only in GameScreen header) */
   stageIntros: string[];
 }
 
@@ -157,6 +208,7 @@ export function generateNarrativeFromLife(life: BaZiLife): LifeNarrative {
       : life.imbalance.weak.length > 0
         ? OBSESSION_NARRATIVE[life.imbalance.obsessionElement]
         : '你的命格相对平衡。没有特别缺的东西，也没有特别多的东西。这种命，活起来舒服，但不容易留下痕迹。',
+    eraDesc: generateEraDesc(life),
     stageIntros,
   };
 }
