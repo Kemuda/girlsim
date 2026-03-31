@@ -10,7 +10,7 @@ export const SHADOW_SCENES: Scene[] = [
     turn: '深夜',
     turnIndex: 0,
     title: '凌晨两点半',
-    text: '你在宿舍坐了六个小时。第三杯咖啡凉了，杯壁上留着奶的痕迹。手机亮了——你最好的朋友发来消息："出来走走？好久没聊了。" 你看了看屏幕上的 deck，又看了看消息。脖子已经硬了一整天。上次给家里打电话——算了算，跨着时差，已经是两周前了。',
+    text: '你在宿舍坐了六个小时。第三杯咖啡凉了，你已经把它当装饰品了。手机亮了——朋友发来消息："出来走走？感觉一百年没见了。" 你看了看 deck，看了看消息，看了看 deck。你在认真考虑把"下次吧"设成快捷回复。',
     choices: [
       {
         text: '"下次吧，这周实在不行"',
@@ -31,7 +31,7 @@ export const SHADOW_SCENES: Scene[] = [
     turn: '比较',
     turnIndex: 1,
     title: '那条动态',
-    text: '睡前刷手机。一个同学发了条 LinkedIn，配了张 co-working space 的照片："Excited to share that..." 底下全是 congratulations 和🔥🔥🔥。往下滑——另一个同学，某个 top program 的 offer，配文"感恩一切遇见❤️"。再往下——订婚照，两个人在某个欧洲小城的街头。你锁了屏。天花板很白。',
+    text: '睡前刷手机。一个同学发了条 LinkedIn："Excited to share that..." 底下全是🔥🔥🔥。往下滑——另一个同学，某个 top program 的 offer，"感恩一切遇见❤️"。再往下——订婚照。你锁了屏。打开了。又锁了。又打开了。这次打开的是外卖 app。',
     choices: [
       {
         text: '又打开了手机，开始改简历',
@@ -52,7 +52,7 @@ export const SHADOW_SCENES: Scene[] = [
     turn: '关系',
     turnIndex: 2,
     title: '十三个小时',
-    text: '你们在一起快两年了。不算长，但够真。上个月你拿到了一个 offer，ta 也拿到了一个——在地球另一边。时差十三个小时。你们坐在学校旁边那家总去的咖啡馆，谁都没先开口。最后 ta 说了句"we\'ll figure it out"。你说"嗯"。你们都知道 figure it out 是什么意思。',
+    text: '你们在一起快两年了。手机里最多的照片都是 ta。上个月你拿到了一个 offer，ta 也拿到了一个——在地球另一边。时差十三个小时。你们坐在学校旁边那家总去的咖啡馆。你的美式喝完了，ta 的燕麦拿铁还没动。最后 ta 说了句 "we\'ll figure it out"。你说 "嗯"。你们都知道这句话的翻译是"先不想了"。',
     choices: [
       {
         text: '"我们都先走自己的路吧"',
@@ -73,7 +73,7 @@ export const SHADOW_SCENES: Scene[] = [
     turn: '选择',
     turnIndex: 3,
     title: '那个 offer',
-    text: '一个很好的机会。Title 好听，package 不错，LinkedIn 发出去绝对收割一波 congratulations。但它和你真正想做的事没什么关系。导师说"you\'d be crazy not to take it"。爸妈说"这种机会你还挑什么"。群里有人说"先上车再说"。只有你知道心里有个声音在说别的——但那个声音不发 LinkedIn，也没有 offer letter。',
+    text: '一个很好的机会。Title 好听，package 不错，发 LinkedIn 绝对收割一波 congratulations。但它和你真正想做的事没什么关系。导师说 "you\'d be crazy not to take it"。爸妈说 "这种机会你还挑什么"。群里有人说 "先上车再说"。你心里那个声音倒是很有主见——可惜它不发 LinkedIn，也没有 offer letter，甚至不能帮你说服你妈。',
     choices: [
       {
         text: '接了——先上车再说',
@@ -94,7 +94,7 @@ export const SHADOW_SCENES: Scene[] = [
     turn: '真话',
     turnIndex: 4,
     title: '你最近怎么样？',
-    text: '一个很久没见的朋友。你们都忙，约了三次才约上。吃到一半，她放下杯子认真看着你："你最近到底怎么样？" 不是 small talk——她是真的在问。你张了张嘴。那些东西突然都涌上来了：凌晨的焦虑，看不到终点的路，不知道自己是不是在过别人的人生，还有一种跨了几个时区也甩不掉的孤独。',
+    text: '一个很久没见的朋友。约了三次才约上。吃到一半，她突然放下杯子看着你："你最近到底怎么样？" 不是 small talk——她是真的在问。空气安静了一秒。你嘴角动了一下，正在组织一个很真诚的 "I\'m good"。',
     choices: [
       {
         text: '"I\'m good, just busy. How about you?"',

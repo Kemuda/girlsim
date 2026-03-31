@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGame } from '../context/GameContext';
-import { UI_TEXT, SHADOW_TURNS } from '../content';
+import { UI_TEXT } from '../content';
 import StatPanel from '../components/StatPanel';
 import ChoiceCard from '../components/ChoiceCard';
 import NarrativeText from '../components/NarrativeText';
@@ -11,6 +11,24 @@ export default function GameScreen() {
   const { state, dispatch } = useGame();
   const [prevState, setPrevState] = useState(state.characterState);
   const t = UI_TEXT.gameScreen;
+  const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const isShadow = state.mode === 'shadow';
+
+  const handleContinue = useCallback(() => {
+    setPrevState(state.characterState);
+    dispatch({ type: 'ADVANCE_TURN' });
+  }, [state.characterState, dispatch]);
+
+  // Shadow mode: auto-advance after 1.5s in transition (no "继续" button needed)
+  useEffect(() => {
+    if (isShadow && state.phase === 'transition') {
+      autoAdvanceRef.current = setTimeout(handleContinue, 1500);
+      return () => {
+        if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
+      };
+    }
+  }, [isShadow, state.phase, handleContinue]);
 
   const handleChoice = useCallback(
     (index: number) => {
@@ -24,6 +42,7 @@ export default function GameScreen() {
 
       dispatch({ type: 'SET_LOADING', loading: true });
 
+      // Shadow mode: 300ms delay (snappy). Full mode: 600ms (contemplative).
       setTimeout(() => {
         const narration = generateNarration(
           state.characterState,
@@ -38,29 +57,39 @@ export default function GameScreen() {
           dispatch({ type: 'MAKE_CHOICE', choiceIndex: index, aiResponse: narration });
         }
         dispatch({ type: 'SET_LOADING', loading: false });
-      }, 600);
+      }, isShadow ? 300 : 600);
     },
-    [state, dispatch]
+    [state, dispatch, isShadow]
   );
-
-  const handleContinue = useCallback(() => {
-    setPrevState(state.characterState);
-    dispatch({ type: 'ADVANCE_TURN' });
-  }, [state.characterState, dispatch]);
 
   const scene = state.phase === 'threshold' ? state.currentThreshold : state.currentScene;
 
   if (!scene) return null;
 
-  const isShadow = state.mode === 'shadow';
+  const totalScenes = isShadow ? 5 : undefined;
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="px-6 py-4 border-b border-white/5">
-        <TurnIndicator
-          currentIndex={state.currentTurnIndex}
-          turns={isShadow ? SHADOW_TURNS : undefined}
-        />
+        {isShadow ? (
+          // Shadow mode: minimal progress
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-xs text-text-secondary">
+              {state.currentSceneIndex + 1} / {totalScenes}
+            </span>
+            <div className="w-24 h-1 bg-bg-hover rounded-full overflow-hidden">
+              <div
+                className="h-full bg-accent/50 rounded-full transition-all duration-500"
+                style={{ width: `${((state.currentSceneIndex + 1) / 5) * 100}%` }}
+              />
+            </div>
+          </div>
+        ) : (
+          <TurnIndicator
+            currentIndex={state.currentTurnIndex}
+            turns={undefined}
+          />
+        )}
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row">
@@ -77,15 +106,18 @@ export default function GameScreen() {
           {state.phase === 'transition' ? (
             <div className="space-y-8">
               <NarrativeText text={state.aiNarration} />
-              <button
-                onClick={handleContinue}
-                className="px-6 py-2 border border-accent/30 rounded-lg text-accent text-sm
-                           hover:bg-accent/10 transition-all duration-300 cursor-pointer
-                           animate-fade-in"
-                style={{ animationDelay: '0.8s', opacity: 0 }}
-              >
-                {t.continueButton}
-              </button>
+              {/* Shadow mode: no continue button, auto-advances */}
+              {!isShadow && (
+                <button
+                  onClick={handleContinue}
+                  className="px-6 py-2 border border-accent/30 rounded-lg text-accent text-sm
+                             hover:bg-accent/10 transition-all duration-300 cursor-pointer
+                             animate-fade-in"
+                  style={{ animationDelay: '0.8s', opacity: 0 }}
+                >
+                  {t.continueButton}
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-8">
@@ -106,20 +138,23 @@ export default function GameScreen() {
 
           {state.isLoading && (
             <div className="mt-6 text-text-secondary text-sm animate-pulse-soft">
-              {t.loadingText}
+              {isShadow ? '...' : t.loadingText}
             </div>
           )}
         </main>
 
-        <aside className="lg:w-72 px-6 py-8 lg:border-l border-white/5">
-          <StatPanel
-            state={state.characterState}
-            prevState={prevState}
-          />
-          <div className="mt-6 text-xs text-text-secondary">
-            <p>{t.choiceCounter(state.history.length)}</p>
-          </div>
-        </aside>
+        {/* Shadow mode: hide stat sidebar — reveal is at the end */}
+        {!isShadow && (
+          <aside className="lg:w-72 px-6 py-8 lg:border-l border-white/5">
+            <StatPanel
+              state={state.characterState}
+              prevState={prevState}
+            />
+            <div className="mt-6 text-xs text-text-secondary">
+              <p>{t.choiceCounter(state.history.length)}</p>
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );
