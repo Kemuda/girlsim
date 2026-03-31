@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This Game We Play</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+SC:wght@600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   DESIGN SYSTEM
+   Font: Playfair Display (display) + DM Sans (body)
+   Scale: 1.333 (Perfect Fourth)
+   Baseline: 8px grid
+   ============================================ */
+
+:root {
+  /* Palette — warm dark with muted gold */
+  --bg: #0c1018;
+  --bg-card: rgba(255, 255, 255, 0.025);
+  --bg-card-hover: rgba(255, 255, 255, 0.045);
+  --border: rgba(212, 174, 126, 0.12);
+  --border-hover: rgba(212, 174, 126, 0.35);
+  --text: #e8dfd2;
+  --text-dim: #9a8e80;
+  --text-faint: rgba(232, 223, 210, 0.35);
+  --gold: #c9a96e;
+  --gold-soft: rgba(201, 169, 110, 0.15);
+  --sage: #7a9e7e;
+
+  /* Type */
+  --font-display: 'Playfair Display', 'Noto Serif SC', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-zh: 'Noto Serif SC', serif;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.8s;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html {
+  height: 100%;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+/* ---- Slide Frame ---- */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 5rem) clamp(2rem, 8vw, 10rem);
+  position: relative;
+  overflow: hidden;
+}
+.inner {
+  max-width: 880px;
+  width: 100%;
+}
+
+/* ---- Typography ---- */
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6.5vw, 5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--text);
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: clamp(1.2rem, 3vw, 2rem);
+}
+h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+p {
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+.label {
+  font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: clamp(0.6rem, 1.2vw, 1rem);
+}
+.big-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.4vw, 1.75rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--gold);
+  max-width: 38ch;
+}
+.footnote {
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  color: var(--text-faint);
+  line-height: 1.6;
+}
+
+/* ---- Cards ---- */
+.grid { display: grid; gap: clamp(0.75rem, 1.2vw, 1rem); }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: clamp(1rem, 1.8vw, 1.5rem);
+  transition: background 0.4s, border-color 0.5s, box-shadow 0.5s;
+}
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  box-shadow: 0 4px 30px rgba(201, 169, 110, 0.06);
+}
+.card h3 { margin-bottom: 0.5rem; }
+.card p {
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+  line-height: 1.65;
+}
+
+/* ---- Spacers ---- */
+.sp-xs { height: clamp(0.4rem, 0.8vw, 0.6rem); }
+.sp-s { height: clamp(0.6rem, 1.2vw, 1rem); }
+.sp-m { height: clamp(1rem, 2vw, 1.5rem); }
+.sp-l { height: clamp(1.5rem, 3vw, 2.5rem); }
+
+/* ---- Dimension characters ---- */
+.dim-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(0.4rem, 0.8vw, 0.75rem);
+  text-align: center;
+}
+.dim-cell {
+  padding: clamp(0.6rem, 1vw, 1rem) 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+.dim-zh {
+  font-family: var(--font-zh);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.3;
+}
+.dim-en {
+  font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  margin-top: 0.2rem;
+}
+
+/* ---- List items ---- */
+.list-item {
+  padding: clamp(0.5rem, 0.8vw, 0.7rem) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.list-item:last-child { border-bottom: none; }
+.list-item strong {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--text);
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+}
+.list-item span {
+  color: var(--text-dim);
+  font-size: clamp(0.8rem, 1.05vw, 0.92rem);
+}
+
+/* ---- Flow diagram ---- */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.3rem, 0.6vw, 0.5rem);
+  flex-wrap: wrap;
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+}
+.flow-step {
+  padding: 0.35em 0.75em;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.flow-arrow { color: var(--text-faint); }
+
+/* ---- Subtle BG gradients ---- */
+.bg-warm {
+  background:
+    radial-gradient(ellipse at 15% 85%, rgba(201, 169, 110, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(122, 158, 126, 0.04) 0%, transparent 50%),
+    var(--bg);
+}
+.bg-cool {
+  background:
+    radial-gradient(ellipse at 75% 75%, rgba(201, 169, 110, 0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 20% 25%, rgba(100, 130, 180, 0.04) 0%, transparent 45%),
+    var(--bg);
+}
+
+/* ---- Animations ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.visible .reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.16s; }
+.d3 { transition-delay: 0.24s; }
+.d4 { transition-delay: 0.32s; }
+.d5 { transition-delay: 0.40s; }
+.d6 { transition-delay: 0.48s; }
+.d7 { transition-delay: 0.56s; }
+
+/* ---- Progress & Nav ---- */
+#progress {
+  position: fixed; top: 0; left: 0; height: 1.5px;
+  background: linear-gradient(90deg, var(--gold), var(--sage));
+  z-index: 100; width: 0%; transition: width 0.4s var(--ease);
+  opacity: 0.7;
+}
+.nav-dots {
+  position: fixed; right: clamp(10px, 1.5vw, 24px); top: 50%;
+  transform: translateY(-50%); z-index: 100;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0;
+  background: rgba(232, 223, 210, 0.15); cursor: pointer;
+  transition: all 0.4s var(--ease);
+}
+.nav-dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 10px rgba(201, 169, 110, 0.3);
+  transform: scale(1.4);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 680px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .dim-row { grid-template-columns: repeat(3, 1fr); }
+  .flow { justify-content: center; }
+}
+@media (max-height: 600px) {
+  .nav-dots { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- =============================================
+     SLIDE 1 — TITLE
+     ============================================= -->
+<section class="slide bg-warm">
+  <div class="inner">
+    <p class="label reveal">Game Design Document</p>
+    <h1 class="reveal d1">This Game<br>We Play</h1>
+    <div class="sp-l"></div>
+    <p class="reveal d3" style="color:var(--text-dim);">Designing a life simulation game for women.</p>
+    <div class="sp-s"></div>
+    <p class="footnote reveal d4">Amber &amp; Claude</p>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 2 — THE QUESTION
+     ============================================= -->
+<section class="slide">
+  <div class="inner">
+    <p class="label reveal">Why This Game</p>
+    <div class="big-quote reveal d1">
+      "If living life as a woman is a game —<br>
+      what kind of game is it?"
+    </div>
+    <div class="sp-l"></div>
+    <p class="reveal d3">Not a points accumulation game. Not an open world you wander freely.<br>
+    Something more like: <em style="color:var(--text);">the same map means different things depending on who you are.</em></p>
+    <div class="sp-m"></div>
+    <p class="reveal d4" style="color:var(--text-dim);">So I started asking — what's the worldview? Who are the players?<br>What are the turns? How do you win? Can you cheat?</p>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 3 — FOOD FOR THOUGHT: WORLDVIEW & PLAYERS
+     ============================================= -->
+<section class="slide bg-cool">
+  <div class="inner">
+    <p class="label reveal">Food for Thought</p>
+    <h2 class="reveal d1">The Design</h2>
+    <div class="grid grid-3 reveal d2">
+      <div class="card">
+        <h3>Worldview</h3>
+        <p>Structures are real. Agency exists within constraints. Internal life counts as primary data. Nothing is purely individual.</p>
+      </div>
+      <div class="card">
+        <h3>Players</h3>
+        <p>Not demographics — <em>tensions</em>. Adaptor ↔ Challenger. Relational ↔ Individual. Embodied ↔ Transcendent. 8 archetypes that shift.</p>
+      </div>
+      <div class="card">
+        <h3>7 Turns</h3>
+        <p>Girlhood → Threshold → First World → Contraction → Reckoning → Second Wind → Legacy. Between each: a fate card you can't plan for.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 4 — FOOD FOR THOUGHT: WINNING & CHEATS
+     ============================================= -->
+<section class="slide">
+  <div class="inner">
+    <div class="grid grid-2">
+      <div>
+        <p class="label reveal">Winning</p>
+        <div class="list-item reveal d1"><strong>The Integrated Life</strong> — <span>you recognize yourself.</span></div>
+        <div class="list-item reveal d2"><strong>The Generous Fire</strong> — <span>you gave heat to many.</span></div>
+        <div class="list-item reveal d3"><strong>The Quiet Fortress</strong> — <span>you protected something precious.</span></div>
+        <div class="list-item reveal d3"><strong>The Still-Playing</strong> — <span>you're still curious. The rarest win.</span></div>
+        <div class="sp-s"></div>
+        <p class="footnote reveal d4">The only loss: never understanding your own life.</p>
+      </div>
+      <div>
+        <p class="label reveal">Cheats</p>
+        <div class="list-item reveal d1"><strong>Marrying up</strong> — <span>works. Coherence penalty in Turn 5.</span></div>
+        <div class="list-item reveal d2"><strong>Suppressing the body</strong> — <span>the bill arrives, always.</span></div>
+        <div class="list-item reveal d3"><strong>Performing a character</strong> — <span>identity debt accumulates.</span></div>
+        <div class="sp-s"></div>
+        <p class="label reveal d4">Surprise drops</p>
+        <p class="reveal d5" style="font-size:clamp(0.78rem,1.05vw,0.9rem);">A mentor who sees you clearly. The right crisis at the right time. Being witnessed — someone sees you fully. Exceedingly rare.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 5 — REALIZATION A: GAME DESIGN AS MEDIUM
+     ============================================= -->
+<section class="slide bg-warm">
+  <div class="inner">
+    <p class="label reveal">Realizations</p>
+    <h2 class="reveal d1">Game Design as a Medium</h2>
+    <div class="sp-s"></div>
+    <div class="grid grid-2 reveal d2">
+      <div class="card">
+        <h3>It forces you to make rules about reality</h3>
+        <p>You can't leave things vague. "Agency within constraints" sounds poetic — but when you build it, you have to decide: <em>how much</em> agency? <em>Which</em> constraints? Game design is philosophy with a compiler.</p>
+      </div>
+      <div class="card">
+        <h3>The medium talks back</h3>
+        <p>Writing an essay, you control the reader's path. In a game, the player does things you didn't expect. The design has to be honest enough to survive contact with choice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 6 — REALIZATION B: CLAUDE CODE
+     ============================================= -->
+<section class="slide">
+  <div class="inner">
+    <p class="label reveal">Realizations</p>
+    <h2 class="reveal d1">Claude Code Is Really Neat</h2>
+    <div class="sp-s"></div>
+    <p class="reveal d2">The game design doc on the previous slides?<br>That came from a conversation between me and Claude.</p>
+    <div class="sp-m"></div>
+    <p class="reveal d3">Not "AI generated content." More like — I asked hard questions,<br>and got back answers that made me think harder.</p>
+    <div class="sp-m"></div>
+    <p class="reveal d4" style="color:var(--text-dim);">Then Claude Code turned the ideas into a working prototype.<br>
+    Design doc → React app → playable demo.<br>
+    The loop between thinking and building got very short.</p>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 7 — WHAT I HAVE: DEMO MECHANICS
+     ============================================= -->
+<section class="slide bg-cool">
+  <div class="inner">
+    <p class="label reveal">What I Have</p>
+    <h2 class="reveal d1">The Demo</h2>
+    <div class="sp-xs"></div>
+    <div class="dim-row reveal d2">
+      <div class="dim-cell"><div class="dim-zh">志</div><div class="dim-en">Coherence</div></div>
+      <div class="dim-cell"><div class="dim-zh">幽</div><div class="dim-en">Depth</div></div>
+      <div class="dim-cell"><div class="dim-zh">韧</div><div class="dim-en">Resilience</div></div>
+      <div class="dim-cell"><div class="dim-zh">渡</div><div class="dim-en">Transmission</div></div>
+      <div class="dim-cell"><div class="dim-zh">身</div><div class="dim-en">Body</div></div>
+      <div class="dim-cell"><div class="dim-zh">影</div><div class="dim-en">Shadow</div></div>
+    </div>
+    <div class="sp-m"></div>
+    <p class="reveal d3">Six dimensions, all start at 50 (Shadow at 10). Every choice shifts them. No choice is purely good — everything is a trade-off.</p>
+    <div class="sp-s"></div>
+    <div class="flow reveal d4">
+      <span class="flow-step">14 scenes</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">3 choices each</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">40% fate cards</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step">7 possible endings</span>
+    </div>
+    <div class="sp-s"></div>
+    <p class="footnote reveal d5">Highest dimension at endgame determines your ending. Shadow only needs 60 to trigger — it accumulates whether you want it to or not.</p>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 8 — WORKING ON NOW
+     ============================================= -->
+<section class="slide">
+  <div class="inner">
+    <p class="label reveal">Working on Now</p>
+    <h2 class="reveal d1">The Underlying Rules</h2>
+    <div class="sp-s"></div>
+    <p class="reveal d2">An open-world game needs a system underneath — not just scripted scenes.</p>
+    <div class="sp-m"></div>
+    <div class="grid grid-2 reveal d3">
+      <div class="card">
+        <h3>八字 as Game Engine</h3>
+        <p>The BaZi system (Chinese astrology) gives each character a natal chart — heavenly stems, earthly branches, five elements, ten gods. Not fortune-telling. A <em>constraint generator</em> that makes each playthrough structurally unique.</p>
+      </div>
+      <div class="card">
+        <h3>命 + 运 = 命运</h3>
+        <p>Destiny is given. Luck is chosen. <em>Fate</em> is the product of both. The bazi chart sets your starting conditions; how you play through the 7 turns is yours. This is the core tension the game is built on.</p>
+      </div>
+    </div>
+    <div class="sp-m"></div>
+    <p class="footnote reveal d4">Figuring out the underlying rules of an open-world game — turns out that's the most interesting part.</p>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 9 — WHAT I NEED
+     ============================================= -->
+<section class="slide">
+  <div class="inner">
+    <p class="label reveal">What I Need</p>
+    <h2 class="reveal d1">Open Doors</h2>
+    <div class="sp-s"></div>
+    <div class="grid grid-3 reveal d2">
+      <div class="card">
+        <h3>Playtesting</h3>
+        <p>People who'd play through the demo and tell me where it rings true — and where it doesn't.</p>
+      </div>
+      <div class="card">
+        <h3>Writers</h3>
+        <p>The game needs voices. Scene writers, dialogue, threshold card narratives. Stories from lived experience.</p>
+      </div>
+      <div class="card">
+        <h3>Thinking Partners</h3>
+        <p>People who find the question interesting. What rules govern this game? What did I miss? What would you add?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     SLIDE 10 — CLOSING
+     ============================================= -->
+<section class="slide bg-warm">
+  <div class="inner" style="display:flex;flex-direction:column;justify-content:center;min-height:60vh;">
+    <div class="big-quote reveal">
+      "This game doesn't end with a score.<br>
+      It ends with a story you can tell about yourself —<br>
+      one that has enough truth in it<br>
+      that you'd recognize it as yours,<br>
+      even in the dark."
+    </div>
+    <div class="sp-l"></div>
+    <p class="footnote reveal d3">Amber &amp; Claude · This Game We Play</p>
+  </div>
+</section>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const dotsEl = document.getElementById('navDots');
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot';
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth' });
+    dotsEl.appendChild(d);
+  });
+
+  const dots = dotsEl.querySelectorAll('.nav-dot');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        const idx = Array.from(slides).indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+      }
+    });
+  }, { threshold: 0.35 });
+
+  slides.forEach(s => obs.observe(s));
+
+  let current = 0;
+  function goTo(i) {
+    i = Math.max(0, Math.min(total - 1, i));
+    slides[i].scrollIntoView({ behavior: 'smooth' });
+    current = i;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowDown', ' ', 'PageDown', 'ArrowRight'].includes(e.key)) { e.preventDefault(); goTo(current + 1); }
+    if (['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); goTo(current - 1); }
+  });
+
+  const scrollObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) current = Array.from(slides).indexOf(e.target); });
+  }, { threshold: 0.5 });
+  slides.forEach(s => scrollObs.observe(s));
+
+  let touchY = 0;
+  document.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; });
+  document.addEventListener('touchend', e => {
+    const dy = touchY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 50) { dy > 0 ? goTo(current + 1) : goTo(current - 1); }
+  });
+})();
+</script>
+</body>
+</html>
