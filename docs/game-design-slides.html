@@ -261,10 +261,9 @@ p {
 
 /* ---- Progress & Nav ---- */
 #progress {
-  position: fixed; top: 0; left: 0; height: 1.5px;
+  position: fixed; top: 0; left: 0; height: 3px;
   background: linear-gradient(90deg, var(--gold), var(--sage));
   z-index: 100; width: 0%; transition: width 0.4s var(--ease);
-  opacity: 0.7;
 }
 .nav-dots {
   position: fixed; right: clamp(10px, 1.5vw, 24px); top: 50%;
@@ -288,7 +287,7 @@ p {
   .dim-row { grid-template-columns: repeat(3, 1fr); }
   .flow { justify-content: center; }
 }
-@media (max-height: 600px) {
+@media (max-height: 400px) {
   .nav-dots { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
