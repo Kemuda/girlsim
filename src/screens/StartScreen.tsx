@@ -37,15 +37,25 @@ export default function StartScreen() {
         </div>
       </div>
 
-      {/* Shadow mode — bottom right corner */}
-      <button
-        onClick={() => dispatch({ type: 'START_GAME', mode: 'shadow' })}
-        className="ui-text fixed bottom-6 right-6 text-text-secondary/30 text-sm hover:text-text-secondary/60
-                   transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4
-                   decoration-text-secondary/15 hover:decoration-text-secondary/30"
-      >
-        {t.shadowButton} — {t.shadowDesc}
-      </button>
+      {/* Character select — bottom right */}
+      <div className="fixed bottom-6 right-6 flex flex-col items-end gap-3">
+        <button
+          onClick={() => dispatch({ type: 'START_GAME', mode: 'chihiro' })}
+          className="ui-text text-text-secondary/30 text-sm hover:text-text-secondary/60
+                     transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4
+                     decoration-text-secondary/15 hover:decoration-text-secondary/30"
+        >
+          以千寻开始
+        </button>
+        <button
+          onClick={() => dispatch({ type: 'START_GAME', mode: 'shadow' })}
+          className="ui-text text-text-secondary/30 text-sm hover:text-text-secondary/60
+                     transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4
+                     decoration-text-secondary/15 hover:decoration-text-secondary/30"
+        >
+          {t.shadowButton} — {t.shadowDesc}
+        </button>
+      </div>
     </div>
   );
 }

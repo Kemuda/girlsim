@@ -1,6 +1,7 @@
 import { useGame } from '../context/GameContext';
 import { determineEnding } from '../constants/endings';
 import { determineShadowEnding, UI_TEXT, DIMENSION_DISPLAY } from '../content';
+import { determineChihiroEnding } from '../content/chihiro/endings';
 import StatPanel from '../components/StatPanel';
 import ShareCard from '../components/ShareCard';
 import DimensionCurve from '../components/DimensionCurve';
@@ -11,10 +12,13 @@ import { generateEndingReflection } from '../engine/bazi';
 export default function EndScreen() {
   const { state, dispatch } = useGame();
   const isShadow = state.mode === 'shadow';
+  const isChihiro = state.mode === 'chihiro';
 
-  const ending = isShadow
-    ? determineShadowEnding(state.characterState)
-    : determineEnding(state.characterState);
+  const ending = isChihiro
+    ? determineChihiroEnding(state.shishenChoices)
+    : isShadow
+      ? determineShadowEnding(state.characterState)
+      : determineEnding(state.characterState);
 
   const t = UI_TEXT.endScreen;
 

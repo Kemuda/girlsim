@@ -5,6 +5,7 @@ import StatPanel from '../components/StatPanel';
 import ChoiceCard from '../components/ChoiceCard';
 import NarrativeText from '../components/NarrativeText';
 import TurnIndicator from '../components/TurnIndicator';
+import DevPanel from '../components/DevPanel';
 import { generateNarration } from '../services/narrator';
 
 export default function GameScreen() {
@@ -145,7 +146,7 @@ export default function GameScreen() {
         </main>
 
         {/* Shadow mode: hide stat sidebar — reveal is at the end */}
-        {!isShadow && (
+        {!isShadow && !state.devMode && (
           <aside className="lg:w-72 px-6 py-8 lg:border-l border-white/5">
             <StatPanel
               state={state.characterState}
@@ -156,6 +157,8 @@ export default function GameScreen() {
             </div>
           </aside>
         )}
+        {/* Dev mode: full engine internals panel */}
+        {state.devMode && <DevPanel />}
       </div>
     </div>
   );

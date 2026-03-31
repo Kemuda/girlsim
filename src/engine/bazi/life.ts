@@ -1,6 +1,7 @@
 // Life Assembly — generates a complete BaZi life profile
 
 import { generateRandomChart, chartToString } from './chart.ts';
+import type { BaZiChart } from './chart.ts';
 import { judgeStrength } from './strength.ts';
 import { extractMonthTheme } from './month-theme.ts';
 import { analyzeImbalance } from './imbalance.ts';
@@ -22,7 +23,10 @@ import type { BaZiLife } from './types.ts';
  */
 export function generateLife(): BaZiLife {
   const chart = generateRandomChart();
+  return generateLifeFromChart(chart);
+}
 
+export function generateLifeFromChart(chart: BaZiChart): BaZiLife {
   return {
     chart,
     dayMaster: chart.day.stem,

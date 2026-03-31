@@ -9,8 +9,11 @@ import type {
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
 import { SCENES, THRESHOLD_CARDS, SHADOW_SCENES } from '../content';
+import { CHIHIRO_SCENES } from '../content/chihiro/scenes';
+import { CHIHIRO_THRESHOLDS } from '../content/chihiro/thresholds';
+import { CHIHIRO_CHART } from '../content/chihiro/chart';
 import type { BaZiLife, ShiShen, LifeNarrative } from '../engine/bazi';
-import { generateLife, generateNarrativeFromLife } from '../engine/bazi';
+import { generateLife, generateLifeFromChart, generateNarrativeFromLife } from '../engine/bazi';
 
 interface GameState {
   phase: GamePhase;
@@ -29,10 +32,13 @@ interface GameState {
   baziLife: BaZiLife | null;
   baziNarrative: LifeNarrative | null;
   shishenChoices: ShiShen[];  // track 十神 direction of each choice
+  // Dev
+  devMode: boolean;
 }
 
 type GameAction =
   | { type: 'START_GAME'; mode?: GameMode }
+  | { type: 'TOGGLE_DEV' }
   | { type: 'BEGIN_PLAY' }
   | { type: 'SET_SCENE'; scene: Scene }
   | { type: 'SET_THRESHOLD'; card: ThresholdCard }
@@ -59,10 +65,17 @@ const initialGameState: GameState = {
   baziLife: null,
   baziNarrative: null,
   shishenChoices: [],
+  devMode: false,
 };
 
 function getScenes(mode: GameMode): Scene[] {
-  return mode === 'shadow' ? SHADOW_SCENES : SCENES;
+  if (mode === 'shadow') return SHADOW_SCENES;
+  if (mode === 'chihiro') return CHIHIRO_SCENES;
+  return SCENES;
+}
+
+function getThresholds(mode: GameMode) {
+  return mode === 'chihiro' ? CHIHIRO_THRESHOLDS : THRESHOLD_CARDS;
 }
 
 function applyDelta(state: CharacterState, delta: Partial<CharacterState>): CharacterState {
@@ -78,7 +91,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME': {
       const mode = action.mode ?? 'full';
-      const life = generateLife();
+      const life = mode === 'chihiro'
+        ? generateLifeFromChart(CHIHIRO_CHART)
+        : generateLife();
       const narrative = generateNarrativeFromLife(life);
       if (mode === 'shadow') {
         // Shadow mode: skip chart reveal, go straight to playing
@@ -94,6 +109,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           baziLife: life,
           baziNarrative: narrative,
           shishenChoices: [],
+          devMode: state.devMode,
         };
       }
       return {
@@ -103,8 +119,12 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         baziLife: life,
         baziNarrative: narrative,
         shishenChoices: [],
+        devMode: state.devMode,
       };
     }
+
+    case 'TOGGLE_DEV':
+      return { ...state, devMode: !state.devMode };
 
     case 'BEGIN_PLAY': {
       const scenes = getScenes(state.mode);
@@ -142,6 +162,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         stateBefore: state.characterState,
         stateAfter: newState,
       };
+      const newShishen = choice.shishenTag
+        ? [...state.shishenChoices, choice.shishenTag]
+        : state.shishenChoices;
       return {
         ...state,
         characterState: newState,
@@ -149,6 +172,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         aiNarration: action.aiResponse,
         phase: 'transition',
         dimensionHistory: [...state.dimensionHistory, newState],
+        shishenChoices: newShishen,
       };
     }
 
@@ -165,6 +189,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         stateBefore: state.characterState,
         stateAfter: newState,
       };
+      const newShishen = choice.shishenTag
+        ? [...state.shishenChoices, choice.shishenTag]
+        : state.shishenChoices;
       return {
         ...state,
         characterState: newState,
@@ -173,6 +200,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         currentThreshold: null,
         phase: 'transition',
         dimensionHistory: [...state.dimensionHistory, newState],
+        shishenChoices: newShishen,
       };
     }
 
@@ -188,9 +216,37 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const currentTurn = state.currentTurnIndex;
       const newTurn = nextScene.turnIndex;
 
+      // Lifespan mechanic: at Stage 3 entry, check for breaking point
+      if (newTurn === 3 && currentTurn < 3 && state.mode !== 'shadow') {
+        if (state.characterState.Body < 20 && state.characterState.Regeneration < 20) {
+          // Trigger breaking point threshold
+          const breakingPoint: import('../types/game').ThresholdCard = {
+            id: 'breaking-point',
+            category: 'Disruption',
+            title: '她在三十岁停下来了',
+            text: '某一天，你发现自己站不起来了。不是身体，是别的什么。\n\n医生说你需要休息。你不确定休息能解决什么。但你确实，再也不想动了。\n\n扛下去，还是停下来？',
+            choices: [
+              { text: '再撑一下，还没到放弃的时候', delta: { Body: -8, Regeneration: 8, Shadow: 5 }, shishenTag: '七杀' },
+              { text: '停下来。真的停下来。', delta: { Body: 10, Regeneration: 10, Shadow: -5 }, shishenTag: '正印' },
+            ],
+          };
+          return {
+            ...state,
+            currentTurnIndex: newTurn,
+            currentSceneIndex: nextSceneIdx,
+            currentScene: nextScene,
+            currentThreshold: breakingPoint,
+            phase: 'threshold',
+            thresholdsUsed: [...state.thresholdsUsed, 'breaking-point'],
+            aiNarration: '',
+          };
+        }
+      }
+
       // Skip threshold cards in shadow mode
-      if (state.mode === 'full' && newTurn > currentTurn) {
-        const available = THRESHOLD_CARDS.filter(
+      if (state.mode !== 'shadow' && newTurn > currentTurn) {
+        const thresholds = getThresholds(state.mode);
+        const available = thresholds.filter(
           (t) => !state.thresholdsUsed.includes(t.id)
         );
         const shouldTrigger = Math.random() < 0.4 && available.length > 0;

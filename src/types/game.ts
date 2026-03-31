@@ -12,6 +12,7 @@ export interface CharacterState {
 export interface Choice {
   text: string;
   delta: Partial<CharacterState>;
+  shishenTag?: import('../engine/bazi/shishen').ShiShen;
 }
 
 export interface Scene {
@@ -42,7 +43,7 @@ export interface HistoryEntry {
 
 export type GamePhase = 'start' | 'chart-reveal' | 'playing' | 'threshold' | 'transition' | 'ending';
 
-export type GameMode = 'full' | 'shadow';
+export type GameMode = 'full' | 'shadow' | 'chihiro';
 
 export interface TurnInfo {
   name: string;

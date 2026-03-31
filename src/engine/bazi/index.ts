@@ -1,6 +1,6 @@
 // BaZi Engine — Public API
 
-export { generateLife } from './life.ts';
+export { generateLife, generateLifeFromChart } from './life.ts';
 
 // Chart utilities
 export { generateRandomChart, chartToString, PILLAR_NAMES } from './chart.ts';
