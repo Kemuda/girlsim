@@ -6,12 +6,12 @@ interface NarrativeTextProps {
 export default function NarrativeText({ text, className = '' }: NarrativeTextProps) {
   const paragraphs = text.split('\n').filter(Boolean);
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-5 ${className}`}>
       {paragraphs.map((p, i) => (
         <p
           key={i}
-          className="leading-relaxed text-text-primary animate-fade-in"
-          style={{ animationDelay: `${i * 0.15}s`, opacity: 0 }}
+          className="text-text-primary text-[17px] leading-[1.85] animate-fade-in"
+          style={{ animationDelay: `${i * 0.12}s`, opacity: 0 }}
         >
           {p}
         </p>

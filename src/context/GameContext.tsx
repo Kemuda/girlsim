@@ -1,16 +1,18 @@
 import { createContext, useContext, useReducer, type ReactNode } from 'react';
 import type {
   CharacterState,
+  GameMode,
   GamePhase,
   HistoryEntry,
   Scene,
   ThresholdCard,
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
-import { SCENES, THRESHOLD_CARDS } from '../content';
+import { SCENES, THRESHOLD_CARDS, SHADOW_SCENES } from '../content';
 
 interface GameState {
   phase: GamePhase;
+  mode: GameMode;
   characterState: CharacterState;
   currentTurnIndex: number;
   currentSceneIndex: number;
@@ -20,10 +22,11 @@ interface GameState {
   aiNarration: string;
   isLoading: boolean;
   thresholdsUsed: string[];
+  dimensionHistory: CharacterState[];
 }
 
 type GameAction =
-  | { type: 'START_GAME' }
+  | { type: 'START_GAME'; mode?: GameMode }
   | { type: 'SET_SCENE'; scene: Scene }
   | { type: 'SET_THRESHOLD'; card: ThresholdCard }
   | { type: 'MAKE_CHOICE'; choiceIndex: number; aiResponse: string }
@@ -35,6 +38,7 @@ type GameAction =
 
 const initialGameState: GameState = {
   phase: 'start',
+  mode: 'full',
   characterState: { ...INITIAL_STATE },
   currentTurnIndex: 0,
   currentSceneIndex: 0,
@@ -44,7 +48,12 @@ const initialGameState: GameState = {
   aiNarration: '',
   isLoading: false,
   thresholdsUsed: [],
+  dimensionHistory: [{ ...INITIAL_STATE }],
 };
+
+function getScenes(mode: GameMode): Scene[] {
+  return mode === 'shadow' ? SHADOW_SCENES : SCENES;
+}
 
 function applyDelta(state: CharacterState, delta: Partial<CharacterState>): CharacterState {
   const next = { ...state };
@@ -58,12 +67,16 @@ function applyDelta(state: CharacterState, delta: Partial<CharacterState>): Char
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME': {
-      const firstScene = SCENES.find((s) => s.turnIndex === 0);
+      const mode = action.mode ?? 'full';
+      const scenes = getScenes(mode);
+      const firstScene = scenes.find((s) => s.turnIndex === 0);
       return {
         ...initialGameState,
+        mode,
         phase: 'playing',
         currentScene: firstScene || null,
         currentSceneIndex: 0,
+        dimensionHistory: [{ ...INITIAL_STATE }],
       };
     }
 
@@ -97,6 +110,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         history: [...state.history, entry],
         aiNarration: action.aiResponse,
         phase: 'transition',
+        dimensionHistory: [...state.dimensionHistory, newState],
       };
     }
 
@@ -120,12 +134,14 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         aiNarration: action.aiResponse,
         currentThreshold: null,
         phase: 'transition',
+        dimensionHistory: [...state.dimensionHistory, newState],
       };
     }
 
     case 'ADVANCE_TURN': {
+      const scenes = getScenes(state.mode);
       const nextSceneIdx = state.currentSceneIndex + 1;
-      const nextScene = SCENES[nextSceneIdx];
+      const nextScene = scenes[nextSceneIdx];
 
       if (!nextScene) {
         return { ...state, phase: 'ending' };
@@ -134,7 +150,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const currentTurn = state.currentTurnIndex;
       const newTurn = nextScene.turnIndex;
 
-      if (newTurn > currentTurn) {
+      // Skip threshold cards in shadow mode
+      if (state.mode === 'full' && newTurn > currentTurn) {
         const available = THRESHOLD_CARDS.filter(
           (t) => !state.thresholdsUsed.includes(t.id)
         );
@@ -195,6 +212,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useGame() {
   const ctx = useContext(GameContext);
   if (!ctx) throw new Error('useGame must be used within GameProvider');
