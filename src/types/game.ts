@@ -51,13 +51,13 @@ export interface TurnInfo {
 }
 
 export const TURNS: TurnInfo[] = [
-  { name: 'Girlhood', ageRange: '0-12岁', index: 0 },
-  { name: 'The Threshold', ageRange: '12-18岁', index: 1 },
-  { name: 'First World', ageRange: '18-28岁', index: 2 },
-  { name: 'The Contraction', ageRange: '28-38岁', index: 3 },
-  { name: 'Midgame Reckoning', ageRange: '38-50岁', index: 4 },
-  { name: 'Second Wind', ageRange: '50-65岁', index: 5 },
-  { name: 'Legacy', ageRange: '65岁+', index: 6 },
+  { name: 'Girlhood', ageRange: '0–12', index: 0 },
+  { name: 'The Threshold', ageRange: '12–18', index: 1 },
+  { name: 'First World', ageRange: '18–28', index: 2 },
+  { name: 'The Contraction', ageRange: '28–38', index: 3 },
+  { name: 'Midgame Reckoning', ageRange: '38–50', index: 4 },
+  { name: 'Second Wind', ageRange: '50–65', index: 5 },
+  { name: 'Legacy', ageRange: '65+', index: 6 },
 ];
 
 export const INITIAL_STATE: CharacterState = {

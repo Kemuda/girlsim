@@ -13,39 +13,39 @@ export interface DimensionDisplay {
 
 export const DIMENSION_DISPLAY: Record<DimensionKey, DimensionDisplay> = {
   Coherence: {
-    label: 'Will',
+    label: 'Coherence',
     icon: '◈',
     color: 'bg-coherence',
-    description: 'Direction & willpower — you know where you\'re going',
+    description: 'Knowing where you\'re going — and not letting go',
   },
   Depth: {
     label: 'Depth',
     icon: '◉',
     color: 'bg-depth',
-    description: 'Inner richness — you see what others can\'t',
+    description: 'The richness of your inner world — seeing what others miss',
   },
   Regeneration: {
-    label: 'Grit',
+    label: 'Resilience',
     icon: '❋',
     color: 'bg-regeneration',
-    description: 'Resilience — no matter how long the winter, you bloom again',
+    description: 'The ability to come back — no matter how long the winter',
   },
   Transmission: {
     label: 'Reach',
     icon: '◎',
     color: 'bg-transmission',
-    description: 'Connection — your ripples travel further than you know',
+    description: 'Your ripple effect on others — further than you\'ll ever know',
   },
   Body: {
     label: 'Body',
     icon: '♡',
     color: 'bg-body',
-    description: 'Embodied wisdom — take care of yourself first',
+    description: 'Embodied wisdom — remembering you\'re not just a brain',
   },
   Shadow: {
     label: 'Shadow',
     icon: '◐',
     color: 'bg-shadow-dim',
-    description: 'The suppressed — what you didn\'t say didn\'t disappear',
+    description: 'What you didn\'t say out loud — it didn\'t go away',
   },
 };
