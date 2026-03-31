@@ -33,9 +33,9 @@ export function detectTouChou(chart: BaZiChart): TouChouResult[] {
   for (const { pos: branchPos, pillar } of pillars) {
     for (const cg of pillar.branch.canggan) {
       const hiddenStem = getTianGan(cg.name);
-      // Check if any heavenly stem shares the same wuxing
+      // Penetration requires EXACT stem match (庚≠辛), not just same wuxing
       for (const { pos: stemPos, stem } of stemPositions) {
-        if (stem.wuxing === hiddenStem.wuxing) {
+        if (stem.name === hiddenStem.name) {
           results.push({
             branchPosition: branchPos,
             hiddenStemName: cg.name,

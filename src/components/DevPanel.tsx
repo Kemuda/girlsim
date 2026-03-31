@@ -176,26 +176,40 @@ export default function DevPanel() {
           <h4 className="ui-text text-[10px] text-text-secondary/40 uppercase tracking-wider">
             当前大运 ({currentCycle.ageRange})
           </h4>
+          {/* Stem */}
           <div className="flex items-center gap-2">
+            <span className="text-text-secondary/30 text-[9px] w-4">干</span>
             <span
               className="font-light text-sm"
               style={{ color: WUXING_COLORS[currentCycle.stem.wuxing as WuXing] }}
             >
               {currentCycle.stem.name}{currentCycle.stem.wuxing}{currentCycle.stem.yinyang === '阳' ? '+' : '−'}
             </span>
+            <span className="text-text-primary/60">{currentCycle.shishen}</span>
+            <span className={`ml-auto text-[10px] ${ENERGY_COLOR[currentCycle.stemEnergy]}`}>
+              {ENERGY_LABEL[currentCycle.stemEnergy]}
+            </span>
+          </div>
+          {/* Branch */}
+          <div className="flex items-center gap-2">
+            <span className="text-text-secondary/30 text-[9px] w-4">支</span>
             <span
               className="text-sm"
               style={{ color: WUXING_COLORS[currentCycle.branch.wuxing as WuXing] }}
             >
               {currentCycle.branch.name}{currentCycle.branch.wuxing}{currentCycle.branch.yinyang === '阳' ? '+' : '−'}
             </span>
-            <span className="text-text-primary/60 ml-1">{currentCycle.shishen}</span>
-            <span className={`ml-auto ${ENERGY_COLOR[currentCycle.energyColor]}`}>
-              {ENERGY_LABEL[currentCycle.energyColor]}
+            <span className="text-text-primary/60">{currentCycle.branchShiShen}</span>
+            <span className={`ml-auto text-[10px] ${ENERGY_COLOR[currentCycle.branchEnergy]}`}>
+              {ENERGY_LABEL[currentCycle.branchEnergy]}
             </span>
           </div>
-          <div className="text-text-secondary/40 leading-relaxed text-[10px]">
-            {SHISHEN_INFO[currentCycle.shishen].description}
+          {/* Composite */}
+          <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+            <span className="text-text-secondary/40 text-[10px]">综合能量</span>
+            <span className={`ml-auto font-medium ${ENERGY_COLOR[currentCycle.energyColor]}`}>
+              {ENERGY_LABEL[currentCycle.energyColor]}
+            </span>
           </div>
         </section>
 

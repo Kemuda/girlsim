@@ -36,7 +36,9 @@ export interface DaYun {
   branch: DiZhi;
   shishen: ShiShen;        // 十神 of the 大运 stem relative to day master
   branchShiShen: ShiShen;  // 十神 of the branch's main hidden stem
-  energyColor: DaYunEnergy;
+  stemEnergy: DaYunEnergy;   // energy from stem only
+  branchEnergy: DaYunEnergy; // energy from branch only
+  energyColor: DaYunEnergy;  // composite (stronger signal wins)
 }
 
 // --- Month Theme (月柱主题) ---

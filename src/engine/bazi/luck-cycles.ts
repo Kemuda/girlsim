@@ -18,6 +18,14 @@ const LIFE_STAGES: { name: LifeStageName; ageRange: string }[] = [
   { name: 'Legacy', ageRange: '65+' },
 ];
 
+const ENERGY_RANK: Record<DaYunEnergy, number> = {
+  pressure: 0,  // strongest signal
+  support:  1,
+  drain:    2,
+  resource: 3,
+  neutral:  4,  // weakest signal
+};
+
 function energyFromRelation(rel: WuXingRelation): DaYunEnergy {
   switch (rel) {
     case 'same':        return 'resource';   // 同我
@@ -26,6 +34,15 @@ function energyFromRelation(rel: WuXingRelation): DaYunEnergy {
     case 'overcomeBy':  return 'pressure';   // 克我
     case 'overcome':    return 'neutral';    // 我克 (耗)
   }
+}
+
+/**
+ * Combine stem and branch energies into a composite.
+ * Rule: the stronger signal wins (pressure > support > drain > resource > neutral).
+ * If both are equally ranked, use the stem (天干主外).
+ */
+function compositeEnergy(stemEnergy: DaYunEnergy, branchEnergy: DaYunEnergy): DaYunEnergy {
+  return ENERGY_RANK[stemEnergy] <= ENERGY_RANK[branchEnergy] ? stemEnergy : branchEnergy;
 }
 
 /**
@@ -58,6 +75,9 @@ export function generateLuckCycles(chart: BaZiChart): DaYun[] {
 
     const stage = LIFE_STAGES[i];
 
+    const stemEnergy = energyFromRelation(wuxingRelation(dayMaster.wuxing, stem.wuxing));
+    const branchEnergy = energyFromRelation(wuxingRelation(dayMaster.wuxing, mainCangGan.wuxing));
+
     cycles.push({
       index: i,
       stage: stage.name,
@@ -66,7 +86,9 @@ export function generateLuckCycles(chart: BaZiChart): DaYun[] {
       branch,
       shishen: calcShiShen(dayMaster, stem),
       branchShiShen: calcShiShen(dayMaster, mainCangGan),
-      energyColor: energyFromRelation(wuxingRelation(dayMaster.wuxing, stem.wuxing)),
+      stemEnergy,
+      branchEnergy,
+      energyColor: compositeEnergy(stemEnergy, branchEnergy),
     });
   }
 
