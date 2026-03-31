@@ -1,68 +1,68 @@
 // ============================================================
-// 叙事模板 — 选择后的旁白文本和人生阶段过渡文本
+// Narration templates — post-choice narration and stage transitions
 // ============================================================
 
-/** 根据最高维度生成的旁白模板 */
+/** Narration templates by highest dimension */
 export const NARRATION_TEMPLATES: Record<string, string[]> = {
   high_coherence: [
-    '你的脚步从未犹豫。每一个选择都在加固你内心的城墙。',
-    '方向感是你最强大的武器——你知道自己要走向哪里。',
+    'Your steps never wavered. Every choice reinforces the walls of your inner fortress.',
+    'Direction is your greatest weapon — you know where you\'re going.',
   ],
   high_depth: [
-    '你的内心世界比外面的世界更广阔。在沉默里，你找到了最多的答案。',
-    '你看到了别人看不到的东西——这是天赋，也是负担。',
+    'Your inner world is vaster than the one outside. In silence, you find the most answers.',
+    'You see what others can\'t — it\'s a gift, and a burden.',
   ],
   high_regeneration: [
-    '你像春天一样——无论冬天多长，你总会重新发芽。',
-    '在你身上有一种温柔的韧性，它不张扬，但从未消失。',
+    'Like spring itself — no matter how long the winter, you always bloom again.',
+    'There\'s a quiet resilience in you. It doesn\'t announce itself, but it never leaves.',
   ],
   high_transmission: [
-    '你的影响力像涟漪一样扩散。你不经意的一句话，可能正在改变某个人的人生。',
-    '你与人之间的联结是你最大的力量。',
+    'Your influence spreads like ripples. A passing word of yours might be changing someone\'s life right now.',
+    'The connections you build with others are your greatest strength.',
   ],
   high_body: [
-    '你始终记得自己是有血肉的人。当头脑太累的时候，身体会接住你。',
-    '你比大多数人更懂得：先照顾好自己，才能照顾好一切。',
+    'You remember you\'re flesh and blood. When the mind is exhausted, the body catches you.',
+    'You understand something most people don\'t: take care of yourself first, then everything else.',
   ],
   high_shadow: [
-    '那些被压下去的情绪并没有消失，它们在暗处生长。',
-    '你的影子越来越长。也许是时候回头看看它了。',
+    'The emotions you pushed down didn\'t disappear. They\'re growing in the dark.',
+    'Your shadow grows longer. Maybe it\'s time to turn around and look at it.',
   ],
   generic: [
-    '生活在继续。每一个选择都在塑造你，虽然你自己可能还没有意识到。',
-    '你不是任何一个标签。你是所有这些时刻的总和。',
-    '前方的路还很长，但你已经走过了最难的部分——开始。',
+    'Life goes on. Every choice is shaping you, even if you don\'t realize it yet.',
+    'You\'re not any single label. You\'re the sum of all these moments.',
+    'The road ahead is long, but you\'ve already done the hardest part — beginning.',
   ],
 };
 
-/** 选择后叙事的连接词 */
+/** Post-choice connectors */
 export const NARRATION_CONNECTORS: string[] = [
-  '你选择了',
-  '在这个时刻，你决定',
-  '你的内心告诉你',
+  'You chose',
+  'In that moment, you decided',
+  'Something inside you said',
 ];
 
-/** 人生阶段之间的过渡旁白 */
+/** Stage transition narration */
 export const TURN_TRANSITIONS: Record<string, string> = {
   'Girlhood→The Threshold':
-    '童年像一场漫长的梦，你在不知不觉中醒来。镜子里的脸不再是小女孩了。',
+    'Childhood was a long dream, and you woke up without realizing it. The face in the mirror is no longer a little girl\'s.',
   'The Threshold→First World':
-    '十八岁，你站在世界的入口。行李很轻，但心里装着整个未来。',
+    'Eighteen. You stand at the entrance to the world. Your luggage is light, but your heart carries the whole future.',
   'First World→The Contraction':
-    '二十多岁的冲劲慢慢变成了一种更沉稳的节奏。生活开始有了重量——不全是负担，也有分量。',
+    'The momentum of your twenties slowly settles into a steadier rhythm. Life gains weight — not all burden, but substance.',
   'The Contraction→Midgame Reckoning':
-    '时间的流速改变了。你开始有了回头看的冲动，也开始认真想：前方还有多远。',
+    'Time moves differently now. You start wanting to look back, and seriously wonder: how much road is left.',
   'Midgame Reckoning→Second Wind':
-    '人到中年的觉醒不是一个瞬间，而是一个漫长的过程。你发现自己还可以重新开始。',
+    'Midlife awakening isn\'t a single moment — it\'s a slow unfolding. You discover you can still start over.',
   'Second Wind→Legacy':
-    '当你不再急着赶路，风景反而变得清晰了。你开始想：留下什么。',
+    'When you stop rushing, the view gets clearer. You begin to think about what you\'ll leave behind.',
 };
 
-/** 暗影值高时追加的旁白 */
-export const SHADOW_HIGH_SUFFIX = '但在心底，有些东西一直在隐隐作痛。';
+/** Appended when Shadow is high */
+export const SHADOW_HIGH_SUFFIX = 'But deep down, something has been quietly aching.';
 
-/** 再生值高时追加的旁白 */
-export const REGENERATION_HIGH_SUFFIX = '不管发生了什么，你总能找到重新出发的力量。';
+/** Appended when Resilience is high */
+export const REGENERATION_HIGH_SUFFIX = 'No matter what happens, you always find the strength to begin again.';
 
-/** 默认过渡旁白 */
-export const DEFAULT_TRANSITION = '时间在继续，你也在继续。';
+/** Default transition */
+export const DEFAULT_TRANSITION = 'Time keeps moving. So do you.';

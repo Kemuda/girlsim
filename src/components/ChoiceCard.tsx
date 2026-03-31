@@ -12,16 +12,19 @@ export default function ChoiceCard({ text, index, onSelect, disabled }: ChoiceCa
     <button
       onClick={() => onSelect(index)}
       disabled={disabled}
-      className="w-full text-left p-4 bg-bg-card hover:bg-bg-hover border border-transparent
-                 hover:border-accent/30 rounded-lg transition-all duration-300
-                 disabled:opacity-50 disabled:cursor-not-allowed
+      className="w-full text-left px-5 py-4 bg-bg-card hover:bg-bg-hover
+                 border border-white/[0.04] hover:border-accent/20
+                 rounded-lg transition-all duration-300
+                 disabled:opacity-40 disabled:cursor-not-allowed
                  group cursor-pointer"
     >
       <div className="flex items-start gap-3">
-        <span className="text-accent/60 text-sm mt-0.5 group-hover:text-accent transition-colors">
+        <span className="ui-text text-accent/40 text-xs mt-1 group-hover:text-accent/70 transition-colors tracking-wider">
           {UI_TEXT.gameScreen.choiceLabels[index]}
         </span>
-        <span className="text-text-primary leading-relaxed">{text}</span>
+        <span className="text-text-primary/80 text-[14px] leading-[1.7] group-hover:text-text-primary transition-colors">
+          {text}
+        </span>
       </div>
     </button>
   );

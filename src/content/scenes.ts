@@ -1,32 +1,29 @@
 // ============================================================
-// 场景脚本 — 14 个核心人生场景
-// ============================================================
-// 每个场景包含：标题、叙事文本、三个选项及其维度影响
-// 编辑提示：delta 为正数表示增加，负数表示减少，范围 0-100
+// Full life scenes — 14 core scenes across 7 life stages
 // ============================================================
 
 import type { Scene } from '../types/game';
 
 export const SCENES: Scene[] = [
-  // ── Turn 0: Girlhood (0-12岁) ──────────────────────────────
+  // ── Turn 0: Girlhood (0–12) ───────────────────────────────
 
   {
     id: 'girlhood-1',
     turn: 'Girlhood',
     turnIndex: 0,
-    title: '院子里的秘密',
-    text: '夏天的午后，你躲在外婆家的院子里。阳光穿过葡萄架，在地上投下斑驳的影子。你发现了一只受伤的小鸟，它的翅膀垂着，眼睛里满是恐惧。',
+    title: 'The Secret in the Courtyard',
+    text: 'A summer afternoon at your grandmother\'s house. Sunlight filters through the grape trellis, casting dappled shadows on the ground. You find an injured bird — its wing drooping, its eyes full of fear.',
     choices: [
       {
-        text: '小心翼翼地捧起它，用旧布条包扎伤口',
+        text: 'Carefully pick it up and bandage its wing with an old cloth',
         delta: { Regeneration: 8, Body: 3, Depth: 2 },
       },
       {
-        text: '跑去叫大人来帮忙',
+        text: 'Run to get an adult to help',
         delta: { Transmission: 5, Coherence: 5 },
       },
       {
-        text: '蹲在旁边静静地看着它，不敢碰',
+        text: 'Crouch beside it and watch quietly, too afraid to touch',
         delta: { Depth: 8, Shadow: 3 },
       },
     ],
@@ -35,43 +32,43 @@ export const SCENES: Scene[] = [
     id: 'girlhood-2',
     turn: 'Girlhood',
     turnIndex: 0,
-    title: '第一次考试',
-    text: '期末考试发下来了。你考了全班第三名——妈妈的表情很复杂，她说"第三名也不错"，但你听出了她话里的意思。隔壁桌的小明考了第一名，正在被老师表扬。',
+    title: 'The First Exam',
+    text: 'Report cards are out. You ranked third in class. Mom\'s expression is complicated — she says "third is fine too," but you hear what she really means. The kid at the next desk got first place and is being praised by the teacher.',
     choices: [
       {
-        text: '暗暗发誓下次一定考第一',
+        text: 'Silently vow to get first place next time',
         delta: { Coherence: 8, Shadow: 5 },
       },
       {
-        text: '觉得第三名挺好的，开心地跑出去玩',
+        text: 'Think third is pretty good and run outside to play',
         delta: { Body: 5, Regeneration: 5 },
       },
       {
-        text: '心里有点难过，但不知道该跟谁说',
+        text: 'Feel a little sad, but don\'t know who to tell',
         delta: { Depth: 7, Shadow: 4 },
       },
     ],
   },
 
-  // ── Turn 1: The Threshold (12-18岁) ────────────────────────
+  // ── Turn 1: The Threshold (12–18) ─────────────────────────
 
   {
     id: 'threshold-1',
     turn: 'The Threshold',
     turnIndex: 1,
-    title: '镜中人',
-    text: '你站在浴室的镜子前。身体在悄悄改变，你不太认识镜中的自己了。学校里有人开始议论你的身材，你假装没听见。今天体育课要跑800米。',
+    title: 'The Person in the Mirror',
+    text: 'You stand in front of the bathroom mirror. Your body is changing, and you barely recognize yourself. At school, people are talking about your figure. You pretend not to hear. Today in PE you have to run 800 meters.',
     choices: [
       {
-        text: '咬牙跑完全程，哪怕最后一个到达',
+        text: 'Grit your teeth and finish the run, even if you\'re last',
         delta: { Body: 8, Coherence: 5 },
       },
       {
-        text: '装病请假，躲在教室里看小说',
+        text: 'Fake being sick and hide in the classroom with a book',
         delta: { Depth: 6, Shadow: 5, Body: -3 },
       },
       {
-        text: '找好朋友一起慢慢跑，边跑边聊天',
+        text: 'Find a friend and jog slowly together, chatting the whole way',
         delta: { Transmission: 7, Regeneration: 3 },
       },
     ],
@@ -80,43 +77,43 @@ export const SCENES: Scene[] = [
     id: 'threshold-2',
     turn: 'The Threshold',
     turnIndex: 1,
-    title: '地下抽屉',
-    text: '你在日记本上写了很多东西——关于那个总在走廊里对你笑的男生，关于和最好的朋友吵架后的失眠，关于觉得全世界都不理解你的夜晚。妈妈似乎翻了你的抽屉。',
+    title: 'The Hidden Drawer',
+    text: 'You\'ve written so much in your diary — about the boy who smiles at you in the hallway, about the sleepless night after fighting with your best friend, about feeling like nobody in the world understands you. It seems your mother went through your drawer.',
     choices: [
       {
-        text: '愤怒地质问妈妈，要求她尊重你的隐私',
+        text: 'Confront her angrily and demand she respect your privacy',
         delta: { Coherence: 6, Transmission: -3, Shadow: 4 },
       },
       {
-        text: '把最私密的页面撕掉，以后用密码锁日记',
+        text: 'Tear out the most private pages and start locking your diary',
         delta: { Depth: 5, Shadow: 6 },
       },
       {
-        text: '主动和妈妈聊聊最近的心事，虽然有点尴尬',
+        text: 'Open up to her about what\'s been on your mind, awkward as it is',
         delta: { Transmission: 8, Regeneration: 4 },
       },
     ],
   },
 
-  // ── Turn 2: First World (18-28岁) ──────────────────────────
+  // ── Turn 2: First World (18–28) ───────────────────────────
 
   {
     id: 'firstworld-1',
     turn: 'First World',
     turnIndex: 2,
-    title: '出发',
-    text: '大学录取通知书到了。这是一座你从未去过的城市，离家一千公里。火车站台上，妈妈的眼圈红了，爸爸假装在看手机。你拖着行李箱，站在人生第一个真正的十字路口。',
+    title: 'Departure',
+    text: 'The college acceptance letter arrived. A city you\'ve never been to, a thousand kilometers from home. On the train platform, Mom\'s eyes are red. Dad pretends to look at his phone. You drag your suitcase toward the first real crossroads of your life.',
     choices: [
       {
-        text: '头也不回地走进车厢，眼泪留到找到座位以后',
+        text: 'Walk into the train car without looking back — save the tears for when you find your seat',
         delta: { Coherence: 7, Depth: 5, Shadow: 3 },
       },
       {
-        text: '抱了抱妈妈，说"我会常打电话的"',
+        text: 'Hug Mom and say "I\'ll call often"',
         delta: { Transmission: 6, Regeneration: 5 },
       },
       {
-        text: '心里有些犹豫，但还是一步步走向检票口',
+        text: 'Feel the hesitation, but keep walking toward the gate, one step at a time',
         delta: { Body: 4, Depth: 4, Coherence: 3 },
       },
     ],
@@ -125,43 +122,43 @@ export const SCENES: Scene[] = [
     id: 'firstworld-2',
     turn: 'First World',
     turnIndex: 2,
-    title: '深夜实验室',
-    text: '你在实验室连续待了三天。论文截止日期就在明天，数据还差最后一组。导师的消息越来越冷淡。与此同时，你最好的朋友在群里发消息说她要结婚了。',
+    title: 'The Late-Night Lab',
+    text: 'Three days straight in the lab. Your paper is due tomorrow. Still missing the last dataset. Your advisor\'s messages are getting colder. Meanwhile, your best friend just announced in the group chat that she\'s getting married.',
     choices: [
       {
-        text: '继续做实验——这是你选的路，必须走完',
+        text: 'Keep going — this is the path you chose, you have to finish it',
         delta: { Coherence: 8, Body: -3, Shadow: 4 },
       },
       {
-        text: '放下手头的事，先去恭喜朋友',
+        text: 'Put down your work and go congratulate your friend first',
         delta: { Transmission: 7, Regeneration: 3 },
       },
       {
-        text: '在实验桌前哭了一会儿，然后擦干眼泪继续',
+        text: 'Cry at your desk for a while, then wipe your eyes and keep going',
         delta: { Depth: 7, Regeneration: 4, Shadow: 2 },
       },
     ],
   },
 
-  // ── Turn 3: The Contraction (28-38岁) ──────────────────────
+  // ── Turn 3: The Contraction (28–38) ───────────────────────
 
   {
     id: 'contraction-1',
     turn: 'The Contraction',
     turnIndex: 3,
-    title: '午夜厨房',
-    text: '凌晨两点，你在厨房热牛奶。孩子终于睡着了，丈夫出差在外。白天的会议上你的方案被否决了，同事们似乎更关心你什么时候休完产假回来。厨房的灯嗡嗡作响。',
+    title: 'Midnight Kitchen',
+    text: '2 AM. You\'re heating milk in the kitchen. The baby finally fell asleep. Your husband is away on a business trip. During the meeting today, your proposal was rejected — your colleagues seemed more interested in when you\'d be back from maternity leave. The kitchen light hums.',
     choices: [
       {
-        text: '打开笔记本，重新修改方案——你不会放弃的',
+        text: 'Open your laptop and rework the proposal — you won\'t give up',
         delta: { Coherence: 8, Body: -4, Shadow: 3 },
       },
       {
-        text: '给远方的老朋友发了一条长长的语音消息',
+        text: 'Send a long voice message to an old friend far away',
         delta: { Transmission: 6, Depth: 5 },
       },
       {
-        text: '就这样坐在黑暗的厨房里，什么都不做，感受安静',
+        text: 'Just sit in the dark kitchen, doing nothing, feeling the quiet',
         delta: { Depth: 7, Regeneration: 5, Shadow: 2 },
       },
     ],
@@ -170,43 +167,43 @@ export const SCENES: Scene[] = [
     id: 'contraction-2',
     turn: 'The Contraction',
     turnIndex: 3,
-    title: '体检报告',
-    text: '体检报告出来了，有几项指标亮了黄灯。医生说"不是大问题，但要注意生活方式"。你想起最近总是胃痛、失眠、脱发——身体在发出信号，而你一直在忽略。',
+    title: 'The Health Report',
+    text: 'The checkup results came back with a few yellow flags. The doctor says "nothing major, but watch your lifestyle." You think about the constant stomach pain, the insomnia, the hair loss — your body has been sending signals, and you\'ve been ignoring them all.',
     choices: [
       {
-        text: '认真制定健康计划，开始每天走路上班',
+        text: 'Make a real health plan — start walking to work every day',
         delta: { Body: 8, Regeneration: 5 },
       },
       {
-        text: '把报告塞进抽屉——哪有时间管这些',
+        text: 'Stuff the report in a drawer — who has time for this',
         delta: { Coherence: 3, Shadow: 8, Body: -5 },
       },
       {
-        text: '和丈夫商量，重新分配家务和工作时间',
+        text: 'Talk to your husband about redistributing housework and hours',
         delta: { Transmission: 6, Body: 3, Coherence: 3 },
       },
     ],
   },
 
-  // ── Turn 4: Midgame Reckoning (38-50岁) ────────────────────
+  // ── Turn 4: Midgame Reckoning (38–50) ─────────────────────
 
   {
     id: 'midgame-1',
     turn: 'Midgame Reckoning',
     turnIndex: 4,
-    title: '空房间',
-    text: '孩子上大学了。你站在她空空的房间里，书架上还留着她小学时候的画。你忽然意识到，十多年来你不知不觉地把"我"变成了"妈妈"。镜子里的你，皱纹不知何时爬上了眼角。',
+    title: 'The Empty Room',
+    text: 'Your daughter left for college. You stand in her empty room — her childhood drawings still on the shelf. You suddenly realize that over the past decade, "I" quietly became "Mom." In the mirror, wrinkles have crept to the corners of your eyes.',
     choices: [
       {
-        text: '报名一个你一直想学的绘画班',
+        text: 'Sign up for the painting class you\'ve always wanted to take',
         delta: { Regeneration: 8, Depth: 5, Coherence: 3 },
       },
       {
-        text: '开始整理这些年攒下的日记和照片',
+        text: 'Start going through the diaries and photos you\'ve collected over the years',
         delta: { Depth: 8, Transmission: 3 },
       },
       {
-        text: '关上房门，坐在地上哭了很久',
+        text: 'Close the door, sit on the floor, and cry for a long time',
         delta: { Shadow: 5, Depth: 5, Regeneration: 3 },
       },
     ],
@@ -215,43 +212,43 @@ export const SCENES: Scene[] = [
     id: 'midgame-2',
     turn: 'Midgame Reckoning',
     turnIndex: 4,
-    title: '十字路口',
-    text: '一个猎头打来电话，说有一个新的职位——薪水翻倍，但需要去另一个城市。丈夫说"你看着办"。父母年纪大了。你的职业在现在的地方似乎已经触到了天花板。',
+    title: 'Crossroads',
+    text: 'A recruiter calls with a new position — double the salary, but in another city. Your husband says "it\'s up to you." Your parents are getting older. Your career here seems to have hit a ceiling.',
     choices: [
       {
-        text: '接受这个机会——这可能是最后一次转折的机会',
+        text: 'Take it — this might be the last chance for a turning point',
         delta: { Coherence: 8, Shadow: 4, Transmission: -3 },
       },
       {
-        text: '拒绝，但开始在本地寻找新的可能性',
+        text: 'Turn it down, but start looking for new possibilities locally',
         delta: { Transmission: 5, Regeneration: 5, Coherence: 3 },
       },
       {
-        text: '和家人一起认真讨论，这不是一个人的决定',
+        text: 'Sit down with the family and discuss it — this isn\'t a solo decision',
         delta: { Transmission: 8, Depth: 4 },
       },
     ],
   },
 
-  // ── Turn 5: Second Wind (50-65岁) ──────────────────────────
+  // ── Turn 5: Second Wind (50–65) ───────────────────────────
 
   {
     id: 'secondwind-1',
     turn: 'Second Wind',
     turnIndex: 5,
-    title: '花园',
-    text: '你在阳台上种了很多花。退休后的日子比想象中平静。有天下午，一个年轻女孩来敲门——她是你以前带过的实习生，现在已经是部门主管了。她说"当年你说的那句话改变了我"。你不太记得了。',
+    title: 'The Garden',
+    text: 'You\'ve filled the balcony with flowers. Retirement is quieter than you expected. One afternoon, a young woman knocks on your door — she was your intern years ago, now a department head. She says "what you told me back then changed my life." You can barely remember.',
     choices: [
       {
-        text: '请她进来喝茶，认真听她现在的困惑',
+        text: 'Invite her in for tea and really listen to what she\'s struggling with now',
         delta: { Transmission: 8, Depth: 5 },
       },
       {
-        text: '感到惊讶和欣慰，和她分享更多人生经验',
+        text: 'Feel surprised and grateful — share more of what you\'ve learned',
         delta: { Transmission: 6, Coherence: 4, Regeneration: 3 },
       },
       {
-        text: '微笑着说"你自己很优秀"，不愿居功',
+        text: 'Smile and say "you did that yourself" — deflect the credit',
         delta: { Depth: 6, Shadow: -3, Regeneration: 4 },
       },
     ],
@@ -260,43 +257,43 @@ export const SCENES: Scene[] = [
     id: 'secondwind-2',
     turn: 'Second Wind',
     turnIndex: 5,
-    title: '旧照片',
-    text: '整理阁楼时，你找到了一箱旧照片。里面有你年轻时候的样子——那个在火车站哭泣的女孩，那个在实验室熬夜的研究生，那个抱着婴儿在午夜厨房里的母亲。你几乎认不出她们了。',
+    title: 'Old Photographs',
+    text: 'Cleaning out the attic, you find a box of old photos. There you are — the girl crying at the train station, the grad student pulling all-nighters in the lab, the mother holding a baby in a midnight kitchen. You hardly recognize them.',
     choices: [
       {
-        text: '把照片整理成相册，给女儿看看你年轻的样子',
+        text: 'Put the photos into an album to show your daughter who you used to be',
         delta: { Transmission: 7, Depth: 5 },
       },
       {
-        text: '对着那些照片说"你做得很好"',
+        text: 'Look at those faces and say "you did well"',
         delta: { Regeneration: 8, Shadow: -5, Depth: 4 },
       },
       {
-        text: '静静地看了很久，然后放回原处',
+        text: 'Gaze at them for a long time, then put them back where they were',
         delta: { Depth: 8, Shadow: 3 },
       },
     ],
   },
 
-  // ── Turn 6: Legacy (65岁+) ─────────────────────────────────
+  // ── Turn 6: Legacy (65+) ──────────────────────────────────
 
   {
     id: 'legacy-1',
     turn: 'Legacy',
     turnIndex: 6,
-    title: '来信',
-    text: '孙女从国外发来邮件，说她在学校的项目拿了奖，主题是"我的家庭"。她写了你的故事——虽然很多细节不太对，但那种精神是对的。她在邮件最后说"奶奶，你是我的英雄"。',
+    title: 'The Letter',
+    text: 'Your granddaughter emails from abroad. Her school project won an award — the topic was "My Family." She wrote your story. Many of the details are wrong, but the spirit is right. At the end she wrote: "Grandma, you are my hero."',
     choices: [
       {
-        text: '慢慢地回一封长信，告诉她真正的故事',
+        text: 'Write her a long letter back, telling her the real story',
         delta: { Transmission: 10, Depth: 5 },
       },
       {
-        text: '把信打印出来，贴在冰箱上，每天都看一遍',
+        text: 'Print it out and put it on the fridge — read it every day',
         delta: { Regeneration: 7, Coherence: 4 },
       },
       {
-        text: '回复说"你才是自己的英雄"',
+        text: 'Reply: "You are your own hero"',
         delta: { Depth: 6, Transmission: 4, Shadow: -3 },
       },
     ],
@@ -305,19 +302,19 @@ export const SCENES: Scene[] = [
     id: 'legacy-2',
     turn: 'Legacy',
     turnIndex: 6,
-    title: '最后的院子',
-    text: '又是一个夏天的午后。你坐在院子里——不是外婆的院子，是你自己的。葡萄架是你亲手搭的。一只鸟停在栏杆上，歪着头看你。你想起很久以前，那个蹲在地上看受伤小鸟的女孩。',
+    title: 'The Last Courtyard',
+    text: 'Another summer afternoon. You sit in a courtyard — not your grandmother\'s, but your own. You built the grape trellis yourself. A bird lands on the railing, tilts its head and looks at you. You think of a girl, a long time ago, crouching on the ground beside an injured bird.',
     choices: [
       {
-        text: '对小鸟说"来，我这里安全"',
+        text: '"Come here — you\'re safe with me"',
         delta: { Regeneration: 8, Transmission: 5, Shadow: -5 },
       },
       {
-        text: '闭上眼睛，让阳光洒在脸上，感受此刻',
+        text: 'Close your eyes, let the sun fall on your face, and feel this moment',
         delta: { Depth: 8, Body: 4, Coherence: 4 },
       },
       {
-        text: '拿出手机，给女儿打个电话',
+        text: 'Pick up your phone and call your daughter',
         delta: { Transmission: 8, Regeneration: 4 },
       },
     ],
