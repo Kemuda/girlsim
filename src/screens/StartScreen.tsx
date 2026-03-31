@@ -6,7 +6,7 @@ export default function StartScreen() {
   const t = UI_TEXT.startScreen;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative">
       <div className="max-w-md w-full text-center space-y-14 animate-fade-in-slow">
         {/* Title */}
         <div className="space-y-3">
@@ -35,18 +35,17 @@ export default function StartScreen() {
             {t.shadowButton}
           </button>
         </div>
-
-        {/* Full life line — secondary */}
-        <div>
-          <button
-            onClick={() => dispatch({ type: 'START_GAME', mode: 'full' })}
-            className="ui-text text-text-secondary/30 text-sm hover:text-text-secondary/60
-                       transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4 decoration-text-secondary/15 hover:decoration-text-secondary/30"
-          >
-            {t.fullButton}
-          </button>
-        </div>
       </div>
+
+      {/* Full life — bottom right corner */}
+      <button
+        onClick={() => dispatch({ type: 'START_GAME', mode: 'full' })}
+        className="ui-text fixed bottom-6 right-6 text-text-secondary/30 text-sm hover:text-text-secondary/60
+                   transition-colors duration-300 cursor-pointer tracking-wide underline underline-offset-4
+                   decoration-text-secondary/15 hover:decoration-text-secondary/30"
+      >
+        {t.fullButton}
+      </button>
     </div>
   );
 }
