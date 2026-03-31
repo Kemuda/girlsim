@@ -66,7 +66,7 @@ export function generateLuckCycles(chart: BaZiChart): DaYun[] {
       branch,
       shishen: calcShiShen(dayMaster, stem),
       branchShiShen: calcShiShen(dayMaster, mainCangGan),
-      energyColor: energyFromRelation(wuxingRelation(stem.wuxing, dayMaster.wuxing)),
+      energyColor: energyFromRelation(wuxingRelation(dayMaster.wuxing, stem.wuxing)),
     });
   }
 
