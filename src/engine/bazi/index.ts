@@ -36,3 +36,7 @@ export type {
   ImbalanceSeverity,
   WuXingCount,
 } from './types.ts';
+
+// Narrative
+export { generateNarrativeFromLife, generateEndingReflection } from './narrative.ts';
+export type { LifeNarrative } from './narrative.ts';

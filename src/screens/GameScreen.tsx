@@ -6,7 +6,6 @@ import ChoiceCard from '../components/ChoiceCard';
 import NarrativeText from '../components/NarrativeText';
 import TurnIndicator from '../components/TurnIndicator';
 import { generateNarration } from '../services/narrator';
-import { SHISHEN_INFO } from '../engine/bazi';
 
 export default function GameScreen() {
   const { state, dispatch } = useGame();
@@ -88,31 +87,11 @@ export default function GameScreen() {
               currentIndex={state.currentTurnIndex}
               turns={undefined}
             />
-            {state.baziLife && state.baziLife.luckCycles[state.currentTurnIndex] && (() => {
-              const dy = state.baziLife!.luckCycles[state.currentTurnIndex];
-              const energyLabel = dy.energyColor === 'support' ? '生助'
-                : dy.energyColor === 'pressure' ? '克压'
-                : dy.energyColor === 'drain' ? '泄耗'
-                : dy.energyColor === 'resource' ? '同助'
-                : '平淡';
-              const energyColor = dy.energyColor === 'support' ? 'text-green-400/60'
-                : dy.energyColor === 'pressure' ? 'text-red-400/60'
-                : dy.energyColor === 'drain' ? 'text-yellow-400/60'
-                : dy.energyColor === 'resource' ? 'text-blue-400/60'
-                : 'text-text-secondary/40';
-              return (
-                <div className="flex items-center gap-2 text-[11px] ui-text">
-                  <span className="text-text-secondary/40">大运</span>
-                  <span className="text-text-secondary/60">{dy.stem.name}{dy.branch.name}</span>
-                  <span className="text-text-secondary/40">·</span>
-                  <span className="text-text-secondary/60">
-                    {dy.shishen}
-                    <span className="text-text-secondary/30 ml-1">{SHISHEN_INFO[dy.shishen].description}</span>
-                  </span>
-                  <span className={`${energyColor} ml-1`}>{energyLabel}</span>
-                </div>
-              );
-            })()}
+            {state.baziNarrative && state.baziNarrative.stageIntros[state.currentTurnIndex] && (
+              <p className="text-[11px] text-text-secondary/50 italic max-w-md">
+                {state.baziNarrative.stageIntros[state.currentTurnIndex]}
+              </p>
+            )}
           </div>
         )}
       </header>

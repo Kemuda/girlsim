@@ -9,8 +9,8 @@ import type {
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
 import { SCENES, THRESHOLD_CARDS, SHADOW_SCENES } from '../content';
-import type { BaZiLife, ShiShen } from '../engine/bazi';
-import { generateLife } from '../engine/bazi';
+import type { BaZiLife, ShiShen, LifeNarrative } from '../engine/bazi';
+import { generateLife, generateNarrativeFromLife } from '../engine/bazi';
 
 interface GameState {
   phase: GamePhase;
@@ -27,6 +27,7 @@ interface GameState {
   dimensionHistory: CharacterState[];
   // BaZi
   baziLife: BaZiLife | null;
+  baziNarrative: LifeNarrative | null;
   shishenChoices: ShiShen[];  // track 十神 direction of each choice
 }
 
@@ -56,6 +57,7 @@ const initialGameState: GameState = {
   thresholdsUsed: [],
   dimensionHistory: [{ ...INITIAL_STATE }],
   baziLife: null,
+  baziNarrative: null,
   shishenChoices: [],
 };
 
@@ -77,6 +79,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case 'START_GAME': {
       const mode = action.mode ?? 'full';
       const life = generateLife();
+      const narrative = generateNarrativeFromLife(life);
       if (mode === 'shadow') {
         // Shadow mode: skip chart reveal, go straight to playing
         const scenes = getScenes(mode);
@@ -89,6 +92,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           currentSceneIndex: 0,
           dimensionHistory: [{ ...INITIAL_STATE }],
           baziLife: life,
+          baziNarrative: narrative,
           shishenChoices: [],
         };
       }
@@ -97,6 +101,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         mode,
         phase: 'chart-reveal',
         baziLife: life,
+        baziNarrative: narrative,
         shishenChoices: [],
       };
     }
