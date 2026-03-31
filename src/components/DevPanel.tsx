@@ -117,6 +117,33 @@ export default function DevPanel() {
             })}
           </div>
 
+          {/* 藏干 row */}
+          <div className="grid grid-cols-4 gap-1 border-t border-white/5 pt-2">
+            {positions.map(pos => {
+              const { canggan } = chart[pos].branch;
+              const OPACITY: Record<string, number> = { main: 0.85, middle: 0.55, residual: 0.35 };
+              return (
+                <div key={pos} className="text-center space-y-0.5">
+                  {canggan.map(cg => {
+                    const gan = getTianGan(cg.name);
+                    const shishen = calcShiShen(dayMaster, gan);
+                    return (
+                      <div key={cg.name} style={{ opacity: OPACITY[cg.weight] }}>
+                        <span
+                          className="text-[10px] font-light"
+                          style={{ color: WUXING_COLORS[gan.wuxing as WuXing] }}
+                        >
+                          {gan.name}{gan.wuxing}
+                        </span>
+                        <span className="text-[9px] text-text-secondary/50 ml-0.5">{shishen}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+
           {/* Day master + strength */}
           <div className="flex items-center gap-2 pt-1">
             <span className="text-text-secondary/40">日主</span>
