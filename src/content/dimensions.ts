@@ -1,5 +1,5 @@
 // ============================================================
-// 维度配置 — 六个内在维度的显示信息
+// Dimension config — six inner dimensions
 // ============================================================
 
 import type { DimensionKey } from '../types/game';
@@ -13,39 +13,39 @@ export interface DimensionDisplay {
 
 export const DIMENSION_DISPLAY: Record<DimensionKey, DimensionDisplay> = {
   Coherence: {
-    label: '志',
+    label: 'Will',
     icon: '◈',
     color: 'bg-coherence',
-    description: '方向感与意志力——你知道自己要走向哪里',
+    description: 'Direction & willpower — you know where you\'re going',
   },
   Depth: {
-    label: '幽',
+    label: 'Depth',
     icon: '◉',
     color: 'bg-depth',
-    description: '内在世界的丰富——你看到了别人看不到的东西',
+    description: 'Inner richness — you see what others can\'t',
   },
   Regeneration: {
-    label: '韧',
+    label: 'Grit',
     icon: '❋',
     color: 'bg-regeneration',
-    description: '复原力——无论冬天多长，你总会重新发芽',
+    description: 'Resilience — no matter how long the winter, you bloom again',
   },
   Transmission: {
-    label: '渡',
+    label: 'Reach',
     icon: '◎',
     color: 'bg-transmission',
-    description: '与他人的联结——你的涟漪扩散到了看不见的地方',
+    description: 'Connection — your ripples travel further than you know',
   },
   Body: {
-    label: '身',
+    label: 'Body',
     icon: '♡',
     color: 'bg-body',
-    description: '身体的智慧——先照顾好自己，才能照顾好一切',
+    description: 'Embodied wisdom — take care of yourself first',
   },
   Shadow: {
-    label: '影',
+    label: 'Shadow',
     icon: '◐',
     color: 'bg-shadow-dim',
-    description: '被压抑的部分——那些没有说出口的，并没有消失',
+    description: 'The suppressed — what you didn\'t say didn\'t disappear',
   },
 };

@@ -13,7 +13,7 @@ export default function ShareCard({ title, subtitle, characterState }: ShareCard
       {/* Header */}
       <div className="text-center space-y-1">
         <p className="text-xs text-text-secondary/60 tracking-widest uppercase">
-          她的一生
+          Her Life
         </p>
         <h2 className="text-3xl font-light">{title}</h2>
         <p className="text-text-secondary text-sm italic">{subtitle}</p>

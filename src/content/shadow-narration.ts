@@ -1,22 +1,22 @@
 // ============================================================
-// 暗影短线旁白 — 朋友吐槽，不是心理咨询
+// Shadow narration — friend commentary, not therapy
 // ============================================================
 
 export const SHADOW_NARRATION: string[] = [
-  '嗯。很你。',
-  '你朋友看到这个选择估计会说："果然是你。"',
-  '快。准。不犹豫。就像你点外卖一样。',
-  '另外两个选项表示不服。',
-  '好的。noted。',
-  '你看了看另外两个选项。然后选了这个。你一直这样。',
-  '稳。',
-  '如果人生有撤回键，你会用吗？算了当我没问。',
-  '你选完了。但那个没选的还在看着你。',
-  '意料之中。',
+  'Yep. Very you.',
+  'Your friends would look at this and say: "classic."',
+  'Fast. Decisive. Like ordering takeout.',
+  'The other two options are offended.',
+  'Noted.',
+  'You glanced at the other two. Then picked this one. You always do.',
+  'Solid.',
+  'If life had an undo button, would you use it? Never mind.',
+  'You chose. But the one you didn\'t pick is still watching.',
+  'Saw that coming.',
 ];
 
 export const SHADOW_CONNECTORS: string[] = [
-  '你选了',
-  '你决定',
-  '这一次，你',
+  'You chose',
+  'You went with',
+  'This time, you',
 ];

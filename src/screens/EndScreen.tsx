@@ -41,14 +41,14 @@ export default function EndScreen() {
 
         {/* Share nudge */}
         <p className="text-center text-xs text-text-secondary/40">
-          发给一个你想到的人
+          Send to someone who came to mind
         </p>
 
         {/* Dimension curve */}
         {state.dimensionHistory.length > 1 && (
           <div className="bg-bg-card rounded-lg p-4 lg:p-6 space-y-3">
             <h3 className="text-xs text-text-secondary uppercase tracking-wider">
-              {isShadow ? '你的选择轨迹' : '你的人生曲线'}
+              {isShadow ? 'Your Choice Trail' : 'Your Life Curve'}
             </h3>
             <DimensionCurve history={state.dimensionHistory} />
           </div>
@@ -114,7 +114,7 @@ export default function EndScreen() {
                 className="text-text-secondary/50 text-xs hover:text-text-secondary
                            transition-colors duration-300 cursor-pointer"
               >
-                体验一个女性的完整一生 →
+                Experience a woman's full life →
               </button>
             </div>
           )}
