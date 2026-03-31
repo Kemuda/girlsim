@@ -74,7 +74,7 @@ export default function GameScreen() {
         {isShadow ? (
           // Shadow mode: minimal progress
           <div className="flex items-center justify-center gap-3">
-            <span className="text-xs text-text-secondary">
+            <span className="ui-text text-[11px] text-text-secondary/50 tabular-nums tracking-wider">
               {state.currentSceneIndex + 1} / {totalScenes}
             </span>
             <div className="w-24 h-1 bg-bg-hover rounded-full overflow-hidden">
@@ -93,14 +93,14 @@ export default function GameScreen() {
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row">
-        <main className="flex-1 px-6 py-8 lg:px-12 max-w-3xl mx-auto w-full">
-          <div className="mb-6">
+        <main className="flex-1 px-6 py-10 lg:px-16 max-w-2xl mx-auto w-full">
+          <div className="mb-8">
             {state.phase === 'threshold' && state.currentThreshold && (
-              <span className="text-xs text-red-400/80 uppercase tracking-wider mb-1 block">
+              <span className="ui-text text-xs text-red-400/60 uppercase tracking-[0.12em] mb-2 block">
                 {state.currentThreshold.category} · {t.thresholdLabel}
               </span>
             )}
-            <h2 className="text-2xl font-light animate-fade-in">{scene.title}</h2>
+            <h2 className="text-2xl font-light tracking-wide animate-fade-in">{scene.title}</h2>
           </div>
 
           {state.phase === 'transition' ? (
@@ -137,7 +137,7 @@ export default function GameScreen() {
           )}
 
           {state.isLoading && (
-            <div className="mt-6 text-text-secondary text-sm animate-pulse-soft">
+            <div className="mt-8 text-text-secondary/50 text-sm animate-pulse-soft">
               {isShadow ? '...' : t.loadingText}
             </div>
           )}
