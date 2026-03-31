@@ -13,6 +13,11 @@ export const SHADOW_NARRATION: string[] = [
   'If life had an undo button, would you use it? Never mind.',
   'You chose. But the one you didn\'t pick is still watching.',
   'Saw that coming.',
+  'Your body already knew. You\'re catching up.',
+  'That took something. Not sure what yet.',
+  'Interesting. Not wrong. Not right. Just... interesting.',
+  'Your mom would have something to say about that.',
+  'The version of you from two years ago would be surprised. Or maybe not.',
 ];
 
 export const SHADOW_CONNECTORS: string[] = [

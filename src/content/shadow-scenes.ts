@@ -110,6 +110,114 @@ export const SHADOW_SCENES: Scene[] = [
       },
     ],
   },
+
+  // ── New scenes: sharper personality differentiation ──────
+
+  {
+    id: 'shadow-body-signal',
+    turn: 'Signal',
+    turnIndex: 5,
+    title: 'The Body Keeps Score',
+    text: 'Third migraine this month. You\'re standing in the pharmacy aisle, staring at the same painkillers you bought last week. Your Apple Watch says your resting heart rate is up 12 bpm from six months ago. There\'s a yoga class at 7 AM tomorrow. There\'s also a 7 AM standup. Your neck hasn\'t not hurt in weeks. You can\'t remember when that started.',
+    choices: [
+      {
+        text: 'Buy the painkillers, pop two, get back to your laptop',
+        delta: { Coherence: 5, Shadow: 6, Body: -4 },
+      },
+      {
+        text: 'Skip the standup tomorrow. Go to yoga. Deal with Slack after.',
+        delta: { Body: 8, Regeneration: 5, Shadow: -3 },
+      },
+      {
+        text: 'Google "burnout symptoms" for the third time, screenshot the list, don\'t do anything about it',
+        delta: { Depth: 6, Shadow: 4 },
+      },
+    ],
+  },
+  {
+    id: 'shadow-failure',
+    turn: 'Fall',
+    turnIndex: 6,
+    title: 'First Real No',
+    text: 'You didn\'t get it. The program, the role, the thing you spent four months preparing for. The rejection email is three sentences long. Polite. Final. Your mom calls — she doesn\'t know yet. A classmate who also applied posts "Thrilled to share..." You\'re sitting in the library. The girl across the table is eating chips very loudly and you might cry or scream or both.',
+    choices: [
+      {
+        text: 'Close the email. Open a new tab. Start looking for the next thing.',
+        delta: { Coherence: 7, Shadow: 5, Regeneration: -2 },
+      },
+      {
+        text: 'Call your mom. Tell her. Let it be awkward.',
+        delta: { Transmission: 6, Regeneration: 5, Shadow: -2 },
+      },
+      {
+        text: 'Leave the library. Walk for an hour. Don\'t listen to anything. Just walk.',
+        delta: { Body: 6, Depth: 5, Regeneration: 4 },
+      },
+    ],
+  },
+  {
+    id: 'shadow-ethics',
+    turn: 'Gray',
+    turnIndex: 7,
+    title: 'The Gray Zone',
+    text: 'Your team lead asks you to "polish" the numbers before the client presentation. Not fake them — just... present them in the most favorable light. "Everyone does this," she says. She\'s not wrong. The client won\'t know. Your name isn\'t on the deck. But your fingerprints are. The promotion cycle is in two months, and she\'s writing your review.',
+    choices: [
+      {
+        text: 'Polish the numbers. This is how the game works.',
+        delta: { Coherence: 5, Shadow: 7, Depth: -3 },
+      },
+      {
+        text: 'Push back quietly — suggest showing the real numbers with better framing',
+        delta: { Depth: 6, Coherence: 4, Transmission: 3 },
+      },
+      {
+        text: 'Do it, but screenshot the original numbers and save them in a personal folder',
+        delta: { Shadow: 5, Depth: 4, Coherence: 3 },
+      },
+    ],
+  },
+  {
+    id: 'shadow-parents',
+    turn: 'Home',
+    turnIndex: 8,
+    title: 'Sunday Call',
+    text: 'Weekly family FaceTime. Dad asks about work — you give the highlight reel. Mom asks if you\'re eating well — you aim the camera away from the instant noodle cups. Then she says, "Your cousin just bought an apartment." Pause. "We\'re not comparing, just mentioning." You can hear the apartment prices in her voice. You love them. You also need to hang up in the next three minutes or you\'ll say something you regret.',
+    choices: [
+      {
+        text: '"I know. I\'m working on it." Change the subject to Dad\'s garden.',
+        delta: { Transmission: 5, Shadow: 5, Regeneration: 3 },
+      },
+      {
+        text: '"Can we not do this every week?" Let the silence sit.',
+        delta: { Coherence: 6, Depth: 5, Transmission: -3 },
+      },
+      {
+        text: '"Mom, I\'m tired. Can I just be your kid for five minutes instead of a résumé?"',
+        delta: { Depth: 7, Transmission: 6, Shadow: -4 },
+      },
+    ],
+  },
+  {
+    id: 'shadow-junior',
+    turn: 'Mirror',
+    turnIndex: 9,
+    title: 'The Intern',
+    text: 'The new intern reminds you of yourself two years ago. Same nervous energy, same overprepared slides, same habit of saying "sorry" before every question. She asks if you have fifteen minutes. You have three. She wants advice on whether to go to grad school or take the return offer. You recognize the question — you asked someone the same thing once. They gave you a perfect answer. You can\'t remember what it was.',
+    choices: [
+      {
+        text: 'Give her the efficient answer — pros, cons, done. You really do only have three minutes.',
+        delta: { Coherence: 6, Shadow: 4, Transmission: 2 },
+      },
+      {
+        text: 'Close your laptop. Give her the full fifteen. Tell her what you wish someone told you.',
+        delta: { Transmission: 8, Depth: 4, Shadow: -3 },
+      },
+      {
+        text: '"Honestly? I still don\'t know if I made the right call. But here\'s what I\'ve learned so far."',
+        delta: { Depth: 7, Transmission: 5, Regeneration: 3 },
+      },
+    ],
+  },
 ];
 
 export const SHADOW_TURNS = [
@@ -118,4 +226,9 @@ export const SHADOW_TURNS = [
   { name: 'Love', ageRange: '', index: 2 },
   { name: 'Choice', ageRange: '', index: 3 },
   { name: 'Truth', ageRange: '', index: 4 },
+  { name: 'Signal', ageRange: '', index: 5 },
+  { name: 'Fall', ageRange: '', index: 6 },
+  { name: 'Gray', ageRange: '', index: 7 },
+  { name: 'Home', ageRange: '', index: 8 },
+  { name: 'Mirror', ageRange: '', index: 9 },
 ];
