@@ -73,7 +73,7 @@ export interface HistoryEntry {
 
 export type GamePhase = 'start' | 'chart-reveal' | 'playing' | 'threshold' | 'transition' | 'dayun-transition' | 'ending';
 
-export type GameMode = 'full' | 'shadow' | 'chihiro';
+export type GameMode = 'full' | 'shadow' | 'chihiro' | 'goodall';
 
 export interface TurnInfo {
   name: string;
