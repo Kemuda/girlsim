@@ -9,10 +9,20 @@ export interface CharacterState {
   Shadow: number;
 }
 
+type ShiShenName = import('../engine/bazi/shishen').ShiShen;
+type DaYunEnergyName = import('../engine/bazi/types').DaYunEnergy;
+
 export interface Choice {
   text: string;
   delta: Partial<CharacterState>;
-  shishenTag?: import('../engine/bazi/shishen').ShiShen;
+  shishenTag?: ShiShenName;
+  // Chihiro-only optional fields (ignored in full/shadow modes)
+  memoryText?: string;
+  echoKey?: string;
+  erasesMemory?: boolean;
+  qiCost?: number;
+  qiBypassTag?: ShiShenName;
+  disabledText?: string;
 }
 
 export interface Scene {
@@ -22,6 +32,26 @@ export interface Scene {
   title: string;
   text: string;
   choices: Choice[];
+  // Chihiro-only optional selector metadata
+  requiredEnergy?: DaYunEnergyName[];
+  requiredDominantTag?: ShiShenName[];
+  triggerCondition?: { dimension: DimensionKey; operator: 'gte' | 'lte'; value: number };
+  echoKey?: string;
+  echoText?: string;
+}
+
+export interface Memory {
+  id: string;
+  text: string;
+  stageIndex: number;
+  shishenTag: ShiShenName;
+  echoKey?: string;
+}
+
+export interface TransitionEvent {
+  from: number;
+  to: number;
+  text: string;
 }
 
 export interface ThresholdCard {
@@ -41,7 +71,7 @@ export interface HistoryEntry {
   stateAfter: CharacterState;
 }
 
-export type GamePhase = 'start' | 'chart-reveal' | 'playing' | 'threshold' | 'transition' | 'ending';
+export type GamePhase = 'start' | 'chart-reveal' | 'playing' | 'threshold' | 'transition' | 'dayun-transition' | 'ending';
 
 export type GameMode = 'full' | 'shadow' | 'chihiro';
 
