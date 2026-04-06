@@ -4,16 +4,21 @@ import type {
   GameMode,
   GamePhase,
   HistoryEntry,
+  Memory,
   Scene,
   ThresholdCard,
+  TransitionEvent,
 } from '../types/game';
 import { INITIAL_STATE } from '../types/game';
 import { SCENES, THRESHOLD_CARDS, SHADOW_SCENES } from '../content';
 import { CHIHIRO_SCENES } from '../content/chihiro/scenes';
 import { CHIHIRO_THRESHOLDS } from '../content/chihiro/thresholds';
 import { CHIHIRO_CHART } from '../content/chihiro/chart';
+import { CHIHIRO_TRANSITIONS } from '../content/chihiro/transitions';
 import type { BaZiLife, ShiShen, LifeNarrative } from '../engine/bazi';
 import { generateLife, generateLifeFromChart, generateNarrativeFromLife } from '../engine/bazi';
+import { selectScenesForStage, computeDominantTag } from '../services/chihiro-selector';
+import { calcQiForStage } from '../services/qi-system';
 
 interface GameState {
   phase: GamePhase;
@@ -32,6 +37,12 @@ interface GameState {
   baziLife: BaZiLife | null;
   baziNarrative: LifeNarrative | null;
   shishenChoices: ShiShen[];  // track 十神 direction of each choice
+  // Chihiro systems
+  memories: Memory[];
+  qi: number;
+  registeredEchoes: string[];
+  stageSceneQueue: Scene[];
+  transitionEvent: TransitionEvent | null;
   // Dev
   devMode: boolean;
 }
@@ -45,6 +56,7 @@ type GameAction =
   | { type: 'MAKE_CHOICE'; choiceIndex: number; aiResponse: string }
   | { type: 'RESOLVE_THRESHOLD'; choiceIndex: number; aiResponse: string }
   | { type: 'ADVANCE_TURN' }
+  | { type: 'ACKNOWLEDGE_DAYUN_TRANSITION' }
   | { type: 'SET_LOADING'; loading: boolean }
   | { type: 'SET_AI_NARRATION'; narration: string }
   | { type: 'END_GAME' };
@@ -65,6 +77,11 @@ const initialGameState: GameState = {
   baziLife: null,
   baziNarrative: null,
   shishenChoices: [],
+  memories: [],
+  qi: 0,
+  registeredEchoes: [],
+  stageSceneQueue: [],
+  transitionEvent: null,
   devMode: false,
 };
 
@@ -127,6 +144,27 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return { ...state, devMode: !state.devMode };
 
     case 'BEGIN_PLAY': {
+      // Chihiro: use scene selector + qi system
+      if (state.mode === 'chihiro' && state.baziLife) {
+        const dayun = state.baziLife.luckCycles[0];
+        const queue = selectScenesForStage({
+          stageIndex: 0,
+          dayun,
+          characterState: state.characterState,
+          dominantTag: null,
+          registeredEchoes: [],
+        });
+        const qi = calcQiForStage(state.baziLife.strength, dayun);
+        return {
+          ...state,
+          phase: 'playing',
+          currentScene: queue[0] ?? null,
+          currentSceneIndex: 0,
+          stageSceneQueue: queue,
+          qi,
+          dimensionHistory: [{ ...INITIAL_STATE }],
+        };
+      }
       const scenes = getScenes(state.mode);
       const firstScene = scenes.find((s) => s.turnIndex === 0);
       return {
@@ -165,6 +203,36 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const newShishen = choice.shishenTag
         ? [...state.shishenChoices, choice.shishenTag]
         : state.shishenChoices;
+
+      // Chihiro-only side effects: memory, echo registry, qi cost
+      let memories = state.memories;
+      let registeredEchoes = state.registeredEchoes;
+      let qi = state.qi;
+      if (state.mode === 'chihiro') {
+        // Memory: append (or erase last if this choice seals memory)
+        if (choice.erasesMemory && memories.length > 0) {
+          memories = memories.slice(0, -1);
+        }
+        if (choice.memoryText) {
+          const newMem: Memory = {
+            id: `${scene.id}-c${action.choiceIndex}`,
+            text: choice.memoryText,
+            stageIndex: scene.turnIndex,
+            shishenTag: choice.shishenTag ?? '正印',
+            echoKey: choice.echoKey,
+          };
+          memories = [...memories, newMem];
+        }
+        // Echo registry
+        if (choice.echoKey && !registeredEchoes.includes(choice.echoKey)) {
+          registeredEchoes = [...registeredEchoes, choice.echoKey];
+        }
+        // Qi cost
+        if (choice.qiCost && choice.qiCost > 0) {
+          qi = Math.max(0, qi - choice.qiCost);
+        }
+      }
+
       return {
         ...state,
         characterState: newState,
@@ -173,6 +241,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         phase: 'transition',
         dimensionHistory: [...state.dimensionHistory, newState],
         shishenChoices: newShishen,
+        memories,
+        registeredEchoes,
+        qi,
       };
     }
 
@@ -205,6 +276,40 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'ADVANCE_TURN': {
+      // Chihiro branch: queue-based scene flow with dayun-transition between stages
+      if (state.mode === 'chihiro' && state.baziLife) {
+        const remaining = state.stageSceneQueue.slice(1);
+
+        if (remaining.length > 0) {
+          // Still more scenes this stage — just advance within the queue
+          return {
+            ...state,
+            stageSceneQueue: remaining,
+            currentScene: remaining[0],
+            currentSceneIndex: state.currentSceneIndex + 1,
+            phase: 'playing',
+            aiNarration: '',
+          };
+        }
+
+        // Queue exhausted — check next stage
+        const nextStageIndex = state.currentTurnIndex + 1;
+        if (nextStageIndex >= state.baziLife.luckCycles.length) {
+          return { ...state, phase: 'ending' };
+        }
+
+        // Fire dayun transition
+        const transition = CHIHIRO_TRANSITIONS.find(
+          (t) => t.from === state.currentTurnIndex && t.to === nextStageIndex,
+        ) ?? null;
+        return {
+          ...state,
+          phase: 'dayun-transition',
+          transitionEvent: transition,
+          aiNarration: '',
+        };
+      }
+
       const scenes = getScenes(state.mode);
       const nextSceneIdx = state.currentSceneIndex + 1;
       const nextScene = scenes[nextSceneIdx];
@@ -272,6 +377,35 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         currentSceneIndex: nextSceneIdx,
         currentScene: nextScene,
         phase: 'playing',
+        aiNarration: '',
+      };
+    }
+
+    case 'ACKNOWLEDGE_DAYUN_TRANSITION': {
+      if (state.mode !== 'chihiro' || !state.baziLife) return state;
+      const nextStageIndex = state.currentTurnIndex + 1;
+      if (nextStageIndex >= state.baziLife.luckCycles.length) {
+        return { ...state, phase: 'ending', transitionEvent: null };
+      }
+      const dayun = state.baziLife.luckCycles[nextStageIndex];
+      const dominantTag = computeDominantTag(state.shishenChoices);
+      const queue = selectScenesForStage({
+        stageIndex: nextStageIndex,
+        dayun,
+        characterState: state.characterState,
+        dominantTag,
+        registeredEchoes: state.registeredEchoes,
+      });
+      const qi = calcQiForStage(state.baziLife.strength, dayun);
+      return {
+        ...state,
+        phase: 'playing',
+        transitionEvent: null,
+        currentTurnIndex: nextStageIndex,
+        currentSceneIndex: state.currentSceneIndex + 1,
+        stageSceneQueue: queue,
+        currentScene: queue[0] ?? null,
+        qi,
         aiNarration: '',
       };
     }

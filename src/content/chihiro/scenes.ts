@@ -15,9 +15,9 @@ export const CHIHIRO_SCENES: Scene[] = [
     title: '那只不知道从哪里来的猫',
     text: '七岁。院子里出现了一只橘猫，不知道是谁家的，也不知道从哪里来。它每天蹲在墙角，看你。你妈妈说不要喂，喂了就赶不走了。',
     choices: [
-      { text: '悄悄带饭出去喂它', delta: { Transmission: 6, Depth: 4, Shadow: 2 }, shishenTag: '食神' },
-      { text: '假装没看见，但每天经过都多看几眼', delta: { Depth: 8, Shadow: 3 }, shishenTag: '偏印' },
-      { text: '听妈妈的话，不喂', delta: { Coherence: 5, Body: 3 }, shishenTag: '正印' },
+      { text: '悄悄带饭出去喂它', delta: { Transmission: 6, Depth: 4, Shadow: 2 }, shishenTag: '食神', memoryText: '七岁那年，我每天带一点饭给那只橘猫。它从没让我抱过，但它在等。', echoKey: 'cat-fed' },
+      { text: '假装没看见，但每天经过都多看几眼', delta: { Depth: 8, Shadow: 3 }, shishenTag: '偏印', memoryText: '我没喂它。但我记得它蹲在墙角的样子——它也在看我。' },
+      { text: '听妈妈的话，不喂', delta: { Coherence: 5, Body: 3 }, shishenTag: '正印', memoryText: '妈妈说不要喂，我就没喂。后来它不见了。' },
     ],
   },
 
@@ -42,10 +42,11 @@ export const CHIHIRO_SCENES: Scene[] = [
     turnIndex: 1,
     title: '那扇不该打开的门',
     text: '十二岁。那个奇怪的夏天改变了一切——你在一个不属于人类的地方活了下来，靠的不是聪明，是某种你自己都说不清楚的东西。\n\n现在你回来了。同学们不知道发生了什么。他们问你暑假去哪里了，你说：去了一个地方。\n\n那个地方的记忆开始模糊。你知道你必须记住某件事，但不知道是什么。',
+    echoKey: 'tunnel-memory',
     choices: [
-      { text: '把那段经历写成日记，不管多荒唐', delta: { Depth: 8, Coherence: 4 }, shishenTag: '食神' },
-      { text: '告诉最好的朋友——即使她不信', delta: { Transmission: 7, Shadow: -3 }, shishenTag: '食神' },
-      { text: '什么都不说，把那段记忆锁起来', delta: { Shadow: 8, Depth: 4, Body: -3 }, shishenTag: '偏印' },
+      { text: '把那段经历写成日记，不管多荒唐', delta: { Depth: 8, Coherence: 4 }, shishenTag: '食神', memoryText: '十二岁那年，我把那个夏天写进了一本蓝皮日记。字歪歪扭扭，但没丢。', echoKey: 'tunnel-written' },
+      { text: '告诉最好的朋友——即使她不信', delta: { Transmission: 7, Shadow: -3 }, shishenTag: '食神', memoryText: '我告诉了她。她没信，但她听完了。那个下午很长。', echoKey: 'tunnel-told' },
+      { text: '什么都不说，把那段记忆锁起来', delta: { Shadow: 8, Depth: 4, Body: -3 }, shishenTag: '偏印', memoryText: '我把那个夏天藏了起来。藏得太好，后来连自己都快找不到了。', erasesMemory: true, echoKey: 'tunnel-sealed' },
     ],
   },
 

@@ -7,6 +7,8 @@ import NarrativeText from '../components/NarrativeText';
 import TurnIndicator from '../components/TurnIndicator';
 import DevPanel from '../components/DevPanel';
 import { generateNarration } from '../services/narrator';
+import { canAffordChoice } from '../services/qi-system';
+import { computeDominantTag } from '../services/chihiro-selector';
 
 export default function GameScreen() {
   const { state, dispatch } = useGame();
@@ -15,11 +17,17 @@ export default function GameScreen() {
   const autoAdvanceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isShadow = state.mode === 'shadow';
+  const isChihiro = state.mode === 'chihiro';
+  const dominantTag = isChihiro ? computeDominantTag(state.shishenChoices) : null;
 
   const handleContinue = useCallback(() => {
     setPrevState(state.characterState);
     dispatch({ type: 'ADVANCE_TURN' });
   }, [state.characterState, dispatch]);
+
+  const handleAcknowledgeTransition = useCallback(() => {
+    dispatch({ type: 'ACKNOWLEDGE_DAYUN_TRANSITION' });
+  }, [dispatch]);
 
   // Clean up auto-advance ref on unmount
   useEffect(() => {
@@ -61,6 +69,27 @@ export default function GameScreen() {
   );
 
   const scene = state.phase === 'threshold' ? state.currentThreshold : state.currentScene;
+
+  // Dayun transition (chihiro): full-screen atmospheric overlay
+  if (state.phase === 'dayun-transition' && state.transitionEvent) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6 py-10">
+        <div className="max-w-xl space-y-8 animate-fade-in">
+          <div className="ui-text text-[11px] text-accent/40 uppercase tracking-[0.2em]">
+            大运转换 · dayun transition
+          </div>
+          <NarrativeText text={state.transitionEvent.text} />
+          <button
+            onClick={handleAcknowledgeTransition}
+            className="ui-text px-6 py-2 border border-accent/20 rounded-lg text-accent text-sm
+                       hover:bg-accent/10 transition-all duration-300 cursor-pointer tracking-wide"
+          >
+            继续 →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!scene) return null;
 
@@ -123,17 +152,30 @@ export default function GameScreen() {
             </div>
           ) : (
             <div className="space-y-8">
+              {isChihiro && 'echoText' in scene && scene.echoText && (
+                <div className="ui-text text-[11px] text-accent/50 italic tracking-wide border-l border-accent/20 pl-3">
+                  {scene.echoText}
+                </div>
+              )}
               <NarrativeText text={scene.text} />
               <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.3s', opacity: 0 }}>
-                {scene.choices.map((choice, i) => (
-                  <ChoiceCard
-                    key={i}
-                    index={i}
-                    text={choice.text}
-                    onSelect={handleChoice}
-                    disabled={state.isLoading}
-                  />
-                ))}
+                {scene.choices.map((choice, i) => {
+                  const affordable = isChihiro
+                    ? canAffordChoice(state.qi, choice.qiCost, choice.qiBypassTag, dominantTag)
+                    : true;
+                  return (
+                    <ChoiceCard
+                      key={i}
+                      index={i}
+                      text={choice.text}
+                      onSelect={handleChoice}
+                      disabled={state.isLoading}
+                      qiLocked={!affordable}
+                      lockedReason={!affordable ? (choice.disabledText ?? '气力不足') : undefined}
+                      qiCost={isChihiro ? choice.qiCost : undefined}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -155,6 +197,33 @@ export default function GameScreen() {
             <div className="mt-6 text-xs text-text-secondary">
               <p>{t.choiceCounter(state.history.length)}</p>
             </div>
+            {isChihiro && (
+              <div className="mt-6 space-y-3 border-t border-white/5 pt-4">
+                <div className="flex items-center justify-between text-[11px] ui-text tracking-wider">
+                  <span className="text-text-secondary/60">气 QI</span>
+                  <span className="text-accent/80 tabular-nums">{state.qi}</span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] ui-text tracking-wider">
+                  <span className="text-text-secondary/60">记忆 MEMORIES</span>
+                  <span className="text-accent/80 tabular-nums">{state.memories.length}</span>
+                </div>
+                {state.registeredEchoes.length > 0 && (
+                  <div className="flex items-center justify-between text-[11px] ui-text tracking-wider">
+                    <span className="text-text-secondary/60">回声 ECHOES</span>
+                    <span className="text-accent/80 tabular-nums">{state.registeredEchoes.length}</span>
+                  </div>
+                )}
+                {state.memories.length > 0 && (
+                  <div className="mt-4 pt-3 border-t border-white/5 space-y-2 max-h-48 overflow-y-auto">
+                    {state.memories.slice(-3).reverse().map((m) => (
+                      <p key={m.id} className="text-[10px] italic text-text-secondary/50 leading-relaxed">
+                        · {m.text}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </aside>
         )}
         {/* Dev mode: full engine internals panel */}
