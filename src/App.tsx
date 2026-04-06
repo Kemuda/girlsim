@@ -25,6 +25,7 @@ function App() {
     case 'playing':
     case 'threshold':
     case 'transition':
+    case 'dayun-transition':
       return <GameScreen />;
     case 'ending':
       return <EndScreen />;
